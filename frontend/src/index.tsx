@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import Router from './components/Router/Router';
-import {SidebarStateProvider} from './contexts/Sidebar/Context';
+import MainLayout from 'layouts/Main/MainLayout';
+import {SidebarStateProvider} from 'contexts/SidebarStateContext';
 import * as serviceWorker from './serviceWorker';
+import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
     <SidebarStateProvider>
-      <Router />
+      <MainLayout />
     </SidebarStateProvider>
   </React.StrictMode>,
   document.getElementById('root'),

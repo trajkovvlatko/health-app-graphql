@@ -1,13 +1,13 @@
 import {useState, useEffect} from 'react';
 
-interface UseFetchInterface {
+interface IUseFetchInterface {
   error: boolean;
   loading: boolean;
   results: any;
 }
 
 export const useFetch = (url: string, token: string = '') => {
-  const [data, updateData] = useState<UseFetchInterface>({
+  const [data, updateData] = useState<IUseFetchInterface>({
     error: false,
     loading: true,
     results: [],
@@ -49,5 +49,6 @@ export const useFetch = (url: string, token: string = '') => {
     }
     fetchData();
   }, [url, token]);
+
   return data;
 };

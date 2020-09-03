@@ -1,13 +1,13 @@
 import React, {useContext} from 'react';
 import {NavLink} from 'react-router-dom';
-import {SidebarStateContext} from '../../contexts/Sidebar/Context';
-import './Sidebar.css';
+import {SidebarStateContext} from 'contexts/SidebarStateContext';
+import './Sidebar.scss';
 
 function Sidebar() {
-  const {sidebarState} = useContext(SidebarStateContext);
+  const {sidebarState, setSidebarState} = useContext(SidebarStateContext);
 
   return (
-    <div className={`sidebar ${sidebarState ? 'active' : ''}`}>
+    <div>
       <h1>Sidebar</h1>
       <ul>
         <li>
@@ -21,6 +21,10 @@ function Sidebar() {
           </NavLink>
         </li>
       </ul>
+
+      <button onClick={() => setSidebarState(!sidebarState)}>
+        Toggle sidebar
+      </button>
     </div>
   );
 }
