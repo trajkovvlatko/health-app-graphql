@@ -6,22 +6,26 @@ interface IProps {
 
 interface ISidebarStateContext {
   sidebarState: boolean;
-  setSidebarState: (sidebarState: boolean) => void;
+  toggle: () => void;
 }
 
 const SidebarStateContext = createContext<ISidebarStateContext>({
   sidebarState: true,
-  setSidebarState: () => {},
+  toggle: () => {},
 });
 
 const SidebarStateProvider = (props: IProps) => {
   const [sidebarState, setSidebarState] = useState<boolean>(true);
 
+  const toggle = () => {
+    setSidebarState(!sidebarState);
+  };
+
   return (
     <SidebarStateContext.Provider
       value={{
         sidebarState,
-        setSidebarState,
+        toggle,
       }}
     >
       {props.children}

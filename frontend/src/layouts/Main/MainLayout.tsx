@@ -34,7 +34,9 @@ function MainLayout() {
           </Switch>
         </div>
 
-        <Footer />
+        <div className='footer'>
+          <Footer />
+        </div>
       </BrowserRouter>
     </div>
   );

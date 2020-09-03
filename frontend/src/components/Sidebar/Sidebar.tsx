@@ -4,7 +4,7 @@ import {SidebarStateContext} from 'contexts/SidebarStateContext';
 import './Sidebar.scss';
 
 function Sidebar() {
-  const {sidebarState, setSidebarState} = useContext(SidebarStateContext);
+  const toggle = useContext(SidebarStateContext).toggle;
 
   return (
     <div>
@@ -22,9 +22,7 @@ function Sidebar() {
         </li>
       </ul>
 
-      <button onClick={() => setSidebarState(!sidebarState)}>
-        Toggle sidebar
-      </button>
+      <button onClick={toggle}>Toggle sidebar</button>
     </div>
   );
 }

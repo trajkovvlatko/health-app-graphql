@@ -7,7 +7,7 @@ import Header from 'components/Header/Header';
 import Sidebar from 'components/Sidebar/Sidebar';
 import Footer from 'components/Footer/Footer';
 
-test('renders the main layout', () => {
+it('renders the main layout', () => {
   const layout = shallow(<MainLayout />);
   expect(layout.find(Home)).toHaveLength(1);
   expect(layout.find(About)).toHaveLength(1);
