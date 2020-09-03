@@ -4,6 +4,7 @@ import Home from 'pages/Home/Home';
 import About from 'pages/About/About';
 import Sidebar from 'components/Sidebar/Sidebar';
 import Header from 'components/Header/Header';
+import Footer from 'components/Footer/Footer';
 import {SidebarStateContext} from 'contexts/SidebarStateContext';
 import './MainLayout.scss';
 
@@ -33,7 +34,7 @@ function MainLayout() {
           </Switch>
         </div>
 
-        <div className='footer'>Footer</div>
+        <Footer />
       </BrowserRouter>
     </div>
   );
