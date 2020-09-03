@@ -2,11 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Router from './components/Router/Router';
+import {SidebarStateProvider} from './contexts/Sidebar/Context';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router />
+    <SidebarStateProvider>
+      <Router />
+    </SidebarStateProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

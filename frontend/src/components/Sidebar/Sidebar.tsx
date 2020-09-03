@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {NavLink} from 'react-router-dom';
+import {SidebarStateContext} from '../../contexts/Sidebar/Context';
 import './Sidebar.css';
 
 function Sidebar() {
+  const {sidebarState} = useContext(SidebarStateContext);
+
   return (
-    <div className='sidebar'>
+    <div className={`sidebar ${sidebarState ? 'active' : ''}`}>
       <h1>Sidebar</h1>
       <ul>
         <li>
