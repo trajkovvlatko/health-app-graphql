@@ -9,7 +9,7 @@ type IForm = {
 
 function Wrapper() {
   const {data, sendRequest} = useRequest();
-  const url = 'http://localhost:3000/data.json';
+  const url = `${process.env.REACT_APP_HOST}/data.json`;
 
   const onSubmit = async (values: IForm) => {
     const formValues = new FormData();
@@ -23,6 +23,7 @@ function Wrapper() {
       <h2>Contact form</h2>
       {data.error && <div>An error occured.</div>}
       {data.loading && <div>Please wait...</div>}
+      {data.results?.success && <div>Successfully submitted.</div>}
       <Form onSubmit={onSubmit} />
     </div>
   );
