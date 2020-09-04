@@ -1,5 +1,5 @@
 import React from 'react';
-import ContactForm from 'components/ContactForm/ContactForm';
+import ContactFormWrapper from 'components/ContactForm/Wrapper';
 import './About.scss';
 
 function About() {
@@ -8,7 +8,7 @@ function About() {
       <h1>About page</h1>
 
       <div>
-        <ContactForm />
+        <ContactFormWrapper />
       </div>
     </div>
   );
