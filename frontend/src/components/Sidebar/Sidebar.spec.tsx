@@ -1,9 +1,10 @@
 import React from 'react';
-import {shallow, mount} from 'enzyme';
+import {shallow} from 'enzyme';
 import Sidebar from './Sidebar';
 import {SidebarStateProvider} from 'contexts/SidebarStateContext';
 import {BrowserRouter} from 'react-router-dom';
 import MainLayout from 'layouts/Main/MainLayout';
+import {fireEvent, render} from '@testing-library/react';
 
 it('renders the sidebar', () => {
   const wrapper = shallow(<Sidebar />);
@@ -27,12 +28,13 @@ describe('the toggle sidebar button', () => {
         </BrowserRouter>
       );
     };
-    const wrapper = mount(<TestComponent />);
-    const btn = wrapper.find('button').at(0);
-    expect(wrapper.find('.sidebar.active').length).toEqual(1);
+    const {container} = render(<TestComponent />);
+    const btn = container.querySelector('button');
+    expect(container.querySelectorAll('.sidebar.active').length).toEqual(1);
 
-    btn.simulate('click');
-    expect(wrapper.find('.sidebar.active').length).toEqual(0);
-    expect(wrapper.find('.sidebar').length).toEqual(1);
+    fireEvent.click(btn!);
+
+    expect(container.querySelector('.sidebar.active')).toBeNull();
+    expect(container.querySelector('.sidebar')).not.toBeNull();
   });
 });

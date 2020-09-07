@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow, mount} from 'enzyme';
 import Wrapper from './Wrapper';
-import {act} from '@testing-library/react';
+import {act, render, fireEvent} from '@testing-library/react';
 
 it('renders the contact form', () => {
   const wrapper = shallow(<Wrapper />);
@@ -11,23 +11,23 @@ it('renders the contact form', () => {
 describe('on submit', () => {
   describe('when an error happens', () => {
     it('shows an error message', async () => {
-      const mockFetchPromise = Promise.resolve({
-        json: () => Promise.reject(),
-      });
+      const mockFetchPromise = Promise.resolve({json: () => Promise.reject()});
 
-      var globalRef: any = global;
-      globalRef.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
+      global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
-      const wrapper = mount(<Wrapper />);
+      let container: HTMLElement | undefined;
       await act(async () => {
-        const name = wrapper.find('input.name').at(0);
-        name.instance().value = 'name';
-        const message = wrapper.find('input.message').at(0);
-        message.instance().value = 'message';
-        wrapper.find('form').simulate('submit');
+        container = render(<Wrapper />).container;
+        const name = container.querySelector('input.name');
+        name!.setAttribute('value', 'name');
+
+        const message = container.querySelector('input.message');
+        message!.setAttribute('value', 'message');
+
+        fireEvent.submit(container.querySelector('form')!);
       });
 
-      expect(wrapper.html()).toContain('An error occured.');
+      expect(container!.innerHTML).toContain('An error occured.');
     });
   });
 
@@ -36,21 +36,22 @@ describe('on submit', () => {
       const mockFetchPromise = Promise.resolve({
         json: () => Promise.resolve({success: true}),
       });
+      global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
-      var globalRef: any = global;
-      globalRef.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
-
-      const wrapper = mount(<Wrapper />);
+      let container: HTMLElement | undefined;
       await act(async () => {
-        const name = wrapper.find('input.name').at(0);
-        name.instance().value = 'name';
-        const message = wrapper.find('input.message').at(0);
-        message.instance().value = 'message';
-        wrapper.find('form').simulate('submit');
+        container = render(<Wrapper />).container;
+        const name = container.querySelector('input.name');
+        name!.setAttribute('value', 'name');
+
+        const message = container.querySelector('input.message');
+        message!.setAttribute('value', 'message');
+
+        fireEvent.submit(container.querySelector('form')!);
       });
 
-      expect(wrapper.html()).not.toContain('An error occured.');
-      expect(wrapper.html()).toContain('Successfully submitted.');
+      expect(container!.innerHTML).not.toContain('An error occured.');
+      expect(container!.innerHTML).toContain('Successfully submitted.');
     });
   });
 });
