@@ -20,6 +20,11 @@ function Sidebar() {
             About
           </NavLink>
         </li>
+        <li>
+          <NavLink exact to='/order' activeClassName='active'>
+            Order
+          </NavLink>
+        </li>
       </ul>
 
       <button onClick={toggle}>Toggle sidebar</button>
