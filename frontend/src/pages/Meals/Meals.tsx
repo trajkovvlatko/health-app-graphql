@@ -1,4 +1,4 @@
-import AddMealForm from 'components/Meals/Add/Form';
+import AddMealWrapper from 'components/Meals/Add/Wrapper';
 import ListMealsWrapper from 'components/Meals/List/Wrapper';
 import React from 'react';
 import './Meals.scss';
@@ -8,7 +8,7 @@ function Meals() {
     <div className='meals-page'>
       <h1>Meals page</h1>
 
-      <AddMealForm />
+      <AddMealWrapper />
       <ListMealsWrapper />
     </div>
   );
