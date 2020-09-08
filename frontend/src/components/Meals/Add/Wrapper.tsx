@@ -17,8 +17,11 @@ function AddMealWrapper() {
     formValues.append('name', values.name);
     formValues.append('message', values.message);
     await sendRequest(url, 'POST', null, formValues);
-    mealsStore.dispatch(addMeal());
   };
+
+  if (data.results) {
+    mealsStore.dispatch(addMeal(data.results));
+  }
 
   return (
     <div>

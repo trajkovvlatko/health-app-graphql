@@ -1,18 +1,21 @@
+import IMeal from 'interfaces/IMeal';
+
 interface IAction {
   type: string;
+  payload: IMeal | number;
 }
 
 export const MEALS_ADD = 'MEALS/ADD';
 export const MEALS_REMOVE = 'MEALS/REMOVE';
 
-const defaultStore: number[] = [];
+const defaultStore: IMeal[] = [];
 
 export default function mealsReducer(state = defaultStore, action: IAction) {
   switch (action.type) {
     case MEALS_ADD:
-      return state;
+      return [...state, action.payload];
     case MEALS_REMOVE:
-      return state;
+      return state.filter((s: IMeal) => s.id !== action.payload);
     default:
       return state;
   }
