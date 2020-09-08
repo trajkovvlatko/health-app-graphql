@@ -1,0 +1,6 @@
+mutation AddMeal($input: MealInput!) {
+  addMeal(input: $input) {
+    id
+    mealType
+  }
+}

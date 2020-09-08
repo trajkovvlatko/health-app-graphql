@@ -15,11 +15,11 @@ export default class Meal extends BaseEntity {
   @Field()
   id: number;
 
-  @Column()
+  @Column({nullable: true}) // TODO: Not nullable
   userId: string;
 
   @Field()
-  @Column()
+  @Column({nullable: true})
   mealType: string;
 
   @Field(() => [Product], {nullable: true})

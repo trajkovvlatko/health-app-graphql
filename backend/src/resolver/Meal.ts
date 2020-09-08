@@ -1,5 +1,19 @@
-import {Resolver, Query, Arg, Int} from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  Arg,
+  Int,
+  InputType,
+  Field,
+  Mutation,
+} from 'type-graphql';
 import Meal from '../entity/Meal';
+
+@InputType()
+class MealInput {
+  @Field()
+  mealType: string;
+}
 
 @Resolver(Meal)
 export default class MealResolver {
@@ -26,5 +40,10 @@ export default class MealResolver {
         id: 'DESC',
       },
     });
+  }
+
+  @Mutation(() => Meal)
+  async addMeal(@Arg('input') input: MealInput): Promise<Meal> {
+    return Meal.create({...input}).save();
   }
 }

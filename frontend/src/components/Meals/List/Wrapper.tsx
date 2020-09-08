@@ -1,20 +1,29 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useApolloClient} from '@apollo/client';
-import {Meal, useMealsQuery} from 'generated/graphql';
+import {Meal, useMealsLazyQuery} from 'generated/graphql';
 import './Wrapper.scss';
 import Message from 'components/Shared/Message/Message';
 import Loading from 'components/Shared/Loading/Loading';
+import mealsStore from 'redux/stores/Meal';
+import IMeal from 'interfaces/IMeal';
+import {setMeals} from 'redux/actions/Meals';
 
 function ListMealsWrapper() {
-  const {data, error, loading} = useMealsQuery({
+  const [mealsList, setMealsList] = useState<IMeal[]>([]);
+  mealsStore.subscribe(() => setMealsList(mealsStore.getState().mealsReducer));
+
+  const [loadMeals, {error, loading}] = useMealsLazyQuery({
     client: useApolloClient(),
-    variables: {
-      skip: 0,
-      take: 10,
+    onCompleted: (res) => {
+      if (res.meals) {
+        mealsStore.dispatch(setMeals(res.meals));
+      }
     },
   });
 
-  const list = data?.meals;
+  useEffect(() => {
+    loadMeals();
+  }, [loadMeals]);
 
   return (
     <div>
@@ -22,7 +31,7 @@ function ListMealsWrapper() {
       {loading && <Loading />}
       {error && <Message type='error' title='Cannot fetch meals.' />}
 
-      {list && list.map((m: Meal) => m.mealType).join(', ')}
+      {mealsList && mealsList.map((m: Meal) => m.mealType).join(', ')}
     </div>
   );
 }

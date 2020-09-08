@@ -1,34 +1,49 @@
-import React from 'react';
+import React, {useState} from 'react';
 import AddMealForm from './Form';
 import IForm from 'interfaces/IForm';
 import './Wrapper.scss';
-import {useRequest} from 'hooks/useRequest';
 import Message from 'components/Shared/Message/Message';
 import Loading from 'components/Shared/Loading/Loading';
 import mealsStore from 'redux/stores/Meal';
+import {useAddMealMutation} from 'generated/graphql';
 import {addMeal} from 'redux/actions/Meals';
+import IMeal from 'interfaces/IMeal';
+
+const initialState = {
+  error: false,
+  loading: false,
+  success: false,
+  result: {} as IMeal,
+};
 
 function AddMealWrapper() {
-  const {data, sendRequest} = useRequest();
-  const url = `${process.env.REACT_APP_HOST}/meals`;
+  const [state, setState] = useState(initialState);
+  const [addMealMutation] = useAddMealMutation();
 
   const onSubmit = async (values: IForm) => {
-    const formValues = new FormData();
-    formValues.append('name', values.name);
-    formValues.append('message', values.message);
-    await sendRequest(url, 'POST', null, formValues);
+    setState({...initialState, loading: true});
+    const res = await addMealMutation({
+      variables: {input: {mealType: values.name}},
+      update: (cache) => {
+        cache.evict({fieldName: 'meals:{}'});
+      },
+    });
+    if (res && res.errors && res.errors.length > 0) {
+      setState({...initialState, loading: false, error: true});
+      return;
+    }
+    if (res.data?.addMeal?.id) {
+      setState({...initialState, loading: false, result: res.data.addMeal});
+      mealsStore.dispatch(addMeal(res.data.addMeal));
+    }
   };
-
-  if (data.results) {
-    mealsStore.dispatch(addMeal(data.results));
-  }
 
   return (
     <div>
       <b>Add a meal</b>
-      {data.error && <Message type='error' title='An error occured.' />}
-      {data.loading && <Loading />}
-      {data.results?.success && <Message type='success' title='Saved.' />}
+      {state.error && <Message type='error' title='An error occured.' />}
+      {state.loading && <Loading />}
+      {state.result.id && <Message type='success' title='Saved.' />}
 
       <AddMealForm onSubmit={onSubmit} />
     </div>
