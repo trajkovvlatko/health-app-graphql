@@ -3,12 +3,20 @@ import ReactDOM from 'react-dom';
 import MainLayout from 'layouts/Main/MainLayout';
 import {SidebarStateProvider} from 'contexts/SidebarStateContext';
 import * as serviceWorker from './serviceWorker';
+import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 import './index.css';
+
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/graphql',
+  cache: new InMemoryCache(),
+});
 
 ReactDOM.render(
   <React.StrictMode>
     <SidebarStateProvider>
-      <MainLayout />
+      <ApolloProvider client={client}>
+        <MainLayout />
+      </ApolloProvider>
     </SidebarStateProvider>
   </React.StrictMode>,
   document.getElementById('root'),
