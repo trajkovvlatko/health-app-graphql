@@ -16,13 +16,54 @@ function Sidebar() {
           </NavLink>
         </li>
         <li>
-          <NavLink exact to='/about' activeClassName='active'>
-            About
+          <NavLink exact to='/meals' activeClassName='active'>
+            Meals
           </NavLink>
         </li>
         <li>
-          <NavLink exact to='/order' activeClassName='active'>
-            Order
+          <NavLink exact to='/weight' activeClassName='active'>
+            Weight
+          </NavLink>
+        </li>
+        <li>
+          <NavLink exact to='/health' activeClassName='active'>
+            Health
+          </NavLink>
+        </li>
+        <li>
+          <NavLink exact to='/workout' activeClassName='active'>
+            Workout
+          </NavLink>
+        </li>
+      </ul>
+
+      <ul>
+        <li>
+          <NavLink exact to='/history' activeClassName='active'>
+            History
+          </NavLink>
+        </li>
+        <li>
+          <NavLink exact to='/reminders' activeClassName='active'>
+            Reminders
+          </NavLink>
+        </li>
+      </ul>
+
+      <ul>
+        <li>
+          <NavLink exact to='/reports' activeClassName='active'>
+            Reports
+          </NavLink>
+        </li>
+        <li>
+          <NavLink exact to='/my_products' activeClassName='active'>
+            My products
+          </NavLink>
+        </li>
+        <li>
+          <NavLink exact to='/profile' activeClassName='active'>
+            Profile
           </NavLink>
         </li>
       </ul>
