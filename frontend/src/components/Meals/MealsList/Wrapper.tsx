@@ -8,7 +8,7 @@ import mealsStore from 'redux/stores/Meal';
 import {setMeals} from 'redux/actions/Meals';
 import ListMealsRow from './Row';
 
-function ListMealsWrapper() {
+function MealsListWrapper() {
   const [mealsList, setMealsList] = useState<MealFragment[]>([]);
   mealsStore.subscribe(() => setMealsList(mealsStore.getState().mealsReducer));
 
@@ -39,4 +39,4 @@ function ListMealsWrapper() {
   );
 }
 
-export default ListMealsWrapper;
+export default MealsListWrapper;
