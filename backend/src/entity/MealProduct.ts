@@ -18,12 +18,14 @@ export default class MealProduct extends BaseEntity {
   @Field()
   id!: number;
 
+  @Field(() => Meal)
   @ManyToOne(() => Meal, (meal) => meal.mealProducts, {
     primary: true,
     nullable: false,
   })
   meal!: Meal;
 
+  @Field(() => Product)
   @ManyToOne(() => Product, (product) => product.mealProducts, {
     primary: true,
     nullable: false,

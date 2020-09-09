@@ -8,6 +8,17 @@ import {
   Mutation,
 } from 'type-graphql';
 import Meal from '../entity/Meal';
+import MealProduct from '../entity/MealProduct';
+import Product from '../entity/Product';
+
+@InputType()
+class ProductInput {
+  @Field()
+  productId: number;
+
+  @Field()
+  amount: number;
+}
 
 @InputType()
 class MealInput {
@@ -16,17 +27,52 @@ class MealInput {
 
   @Field()
   userId: number;
+
+  @Field(() => [ProductInput])
+  products: ProductInput[];
 }
+
+const relations = ['mealType', 'mealProducts', 'mealProducts.product'];
 
 @Resolver(Meal)
 export default class MealResolver {
+  // Example:
+  // query Meal {
+  //   meal(id: 1) {
+  //     mealType {
+  //       name
+  //     }
+  //     mealProducts {
+  //       amount
+  //       product {
+  //         name
+  //         measure
+  //         calories
+  //       }
+  //     }
+  //   }
+  // }
   @Query(() => Meal, {nullable: true})
   meal(@Arg('id', () => Int) id: number): Promise<Meal> {
-    return Meal.findOne(id, {
-      relations: ['products'],
-    });
+    return Meal.findOne(id, {relations});
   }
 
+  // Example:
+  // query Meals {
+  //   meals(skip: 1, take: 5) {
+  //     mealType {
+  //       name
+  //     }
+  //     mealProducts {
+  //       amount
+  //       product {
+  //         name
+  //         measure
+  //         calories
+  //       }
+  //     }
+  //   }
+  // }
   @Query(() => [Meal], {nullable: true})
   meals(
     @Arg('take', () => Int, {nullable: true}) take: number | null,
@@ -36,7 +82,7 @@ export default class MealResolver {
     if (!skip || skip < 0) skip = 0;
 
     return Meal.find({
-      relations: ['products'],
+      relations,
       take,
       skip,
       order: {
@@ -45,11 +91,48 @@ export default class MealResolver {
     });
   }
 
+  // Example:
+  // mutation AddMeal {
+  //   addMeal(
+  //     input: {
+  //       mealTypeId: 1
+  //       userId: 1
+  //       products: [
+  //         { productId: 1, amount: 3 }
+  //         { productId: 2, amount: 2 }
+  //         { productId: 3, amount: 1 }
+  //       ]
+  //     }
+  //   ) {
+  //     mealType {
+  //       name
+  //     }
+  //     mealProducts {
+  //       amount
+  //       product {
+  //         name
+  //         measure
+  //         calories
+  //       }
+  //     }
+  //   }
+  // }
   @Mutation(() => Meal)
   async addMeal(@Arg('input') input: MealInput): Promise<Meal> {
     const meal = new Meal();
     meal.userId = input.userId;
     meal.mealTypeId = input.mealTypeId;
-    return meal.save();
+    await meal.save();
+
+    const promises = input.products.map(async (p: ProductInput) => {
+      const mealProduct = new MealProduct();
+      mealProduct.meal = meal;
+      mealProduct.product = await Product.findOne(p.productId);
+      mealProduct.amount = p.amount;
+      await mealProduct.save();
+    });
+    await Promise.all(promises);
+
+    return Meal.findOne(meal.id, {relations});
   }
 }
