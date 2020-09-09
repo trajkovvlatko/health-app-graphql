@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import {createConnection} from 'typeorm';
 import MealResolver from './resolver/Meal';
 import ProductResolver from './resolver/Product';
+import MealTypeResolver from './resolver/MealType';
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ export default async function (): Promise<void> {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [MealResolver, ProductResolver],
+      resolvers: [MealResolver, ProductResolver, MealTypeResolver],
       validate: false,
     }),
     context: ({req, res}) => ({req, res}),

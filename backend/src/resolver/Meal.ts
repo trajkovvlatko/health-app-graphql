@@ -7,6 +7,7 @@ import {
   Field,
   Mutation,
 } from 'type-graphql';
+import {SelectQueryBuilder} from 'typeorm';
 import Meal from '../entity/Meal';
 import MealProduct from '../entity/MealProduct';
 import Product from '../entity/Product';
@@ -33,6 +34,8 @@ class MealInput {
 }
 
 const relations = ['mealType', 'mealProducts', 'mealProducts.product'];
+// TODO: Fix the relation name here, use ActiveRecord
+const activeProducts = `"Meal__mealProducts__product"."active" IS TRUE`;
 
 @Resolver(Meal)
 export default class MealResolver {
@@ -54,7 +57,10 @@ export default class MealResolver {
   // }
   @Query(() => Meal, {nullable: true})
   meal(@Arg('id', () => Int) id: number): Promise<Meal> {
-    return Meal.findOne(id, {relations});
+    return Meal.findOne(id, {
+      relations,
+      where: activeProducts,
+    });
   }
 
   // Example:
@@ -83,6 +89,7 @@ export default class MealResolver {
 
     return Meal.find({
       relations,
+      where: activeProducts,
       take,
       skip,
       order: {
