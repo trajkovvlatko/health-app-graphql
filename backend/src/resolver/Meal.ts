@@ -12,7 +12,10 @@ import Meal from '../entity/Meal';
 @InputType()
 class MealInput {
   @Field()
-  mealType: string;
+  mealTypeId: number;
+
+  @Field()
+  userId: number;
 }
 
 @Resolver(Meal)
@@ -44,7 +47,9 @@ export default class MealResolver {
 
   @Mutation(() => Meal)
   async addMeal(@Arg('input') input: MealInput): Promise<Meal> {
-    // TODO!
-    return null; // Meal.create({...input}).save();
+    const meal = new Meal();
+    meal.userId = input.userId;
+    meal.mealTypeId = input.mealTypeId;
+    return meal.save();
   }
 }

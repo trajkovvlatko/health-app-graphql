@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  Column,
 } from 'typeorm';
 import User from './User';
 import MealProduct from './MealProduct';
@@ -23,9 +24,15 @@ export default class Meal extends BaseEntity {
   @ManyToOne(() => User, (user) => user, {nullable: false})
   user!: User;
 
+  @Column()
+  userId!: number;
+
   @Field()
   @ManyToOne(() => MealType, (mealType) => mealType, {nullable: false})
   mealType!: MealType;
+
+  @Column()
+  mealTypeId!: number;
 
   @Field(() => String)
   @CreateDateColumn()
