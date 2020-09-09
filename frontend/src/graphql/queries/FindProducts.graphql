@@ -1,0 +1,7 @@
+query FindProducts($name: String!) {
+  findProducts(name: $name) {
+    name
+    measure
+    calories
+  }
+}

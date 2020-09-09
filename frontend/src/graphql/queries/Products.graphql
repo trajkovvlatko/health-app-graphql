@@ -1,0 +1,7 @@
+query Products($skip: Int, $take: Int) {
+  products(skip: $skip, take: $take) {
+    name
+    measure
+    calories
+  }
+}

@@ -1,4 +1,13 @@
 fragment MealFragment on Meal {
-  id
-  mealType
+  mealType {
+    name
+  }
+  mealProducts {
+    amount
+    product {
+      name
+      measure
+      calories
+    }
+  }
 }

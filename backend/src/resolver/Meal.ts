@@ -7,7 +7,6 @@ import {
   Field,
   Mutation,
 } from 'type-graphql';
-import {SelectQueryBuilder} from 'typeorm';
 import Meal from '../entity/Meal';
 import MealProduct from '../entity/MealProduct';
 import Product from '../entity/Product';
