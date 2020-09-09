@@ -114,8 +114,9 @@ export type ProductInput = {
   amount: Scalars['Float'];
 };
 
-export type MealFragmentFragment = (
+export type MealFragment = (
   { __typename?: 'Meal' }
+  & Pick<Meal, 'id'>
   & { mealType: (
     { __typename?: 'MealType' }
     & Pick<MealType, 'name'>
@@ -138,7 +139,7 @@ export type AddMealMutation = (
   { __typename?: 'Mutation' }
   & { addMeal: (
     { __typename?: 'Meal' }
-    & MealFragmentFragment
+    & MealFragment
   ) }
 );
 
@@ -164,7 +165,7 @@ export type MealQuery = (
   { __typename?: 'Query' }
   & { meal?: Maybe<(
     { __typename?: 'Meal' }
-    & MealFragmentFragment
+    & MealFragment
   )> }
 );
 
@@ -189,7 +190,7 @@ export type MealsQuery = (
   { __typename?: 'Query' }
   & { meals?: Maybe<Array<(
     { __typename?: 'Meal' }
-    & MealFragmentFragment
+    & MealFragment
   )>> }
 );
 
@@ -207,8 +208,9 @@ export type ProductsQuery = (
   )>> }
 );
 
-export const MealFragmentFragmentDoc = gql`
-    fragment MealFragment on Meal {
+export const MealFragmentDoc = gql`
+    fragment Meal on Meal {
+  id
   mealType {
     name
   }
@@ -225,10 +227,10 @@ export const MealFragmentFragmentDoc = gql`
 export const AddMealDocument = gql`
     mutation AddMeal($input: MealInput!) {
   addMeal(input: $input) {
-    ...MealFragment
+    ...Meal
   }
 }
-    ${MealFragmentFragmentDoc}`;
+    ${MealFragmentDoc}`;
 export type AddMealMutationFn = Apollo.MutationFunction<AddMealMutation, AddMealMutationVariables>;
 
 /**
@@ -292,10 +294,10 @@ export type FindProductsQueryResult = Apollo.QueryResult<FindProductsQuery, Find
 export const MealDocument = gql`
     query Meal($id: Int!) {
   meal(id: $id) {
-    ...MealFragment
+    ...Meal
   }
 }
-    ${MealFragmentFragmentDoc}`;
+    ${MealFragmentDoc}`;
 
 /**
  * __useMealQuery__
@@ -357,10 +359,10 @@ export type MealTypeQueryResult = Apollo.QueryResult<MealTypeQuery, MealTypeQuer
 export const MealsDocument = gql`
     query Meals($skip: Int, $take: Int) {
   meals(skip: $skip, take: $take) {
-    ...MealFragment
+    ...Meal
   }
 }
-    ${MealFragmentFragmentDoc}`;
+    ${MealFragmentDoc}`;
 
 /**
  * __useMealsQuery__

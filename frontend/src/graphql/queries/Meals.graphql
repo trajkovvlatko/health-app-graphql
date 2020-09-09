@@ -1,5 +1,5 @@
 query Meals($skip: Int, $take: Int) {
   meals(skip: $skip, take: $take) {
-    ...MealFragment
+    ...Meal
   }
 }

@@ -12,12 +12,20 @@ function AddMealForm(props: IProps) {
   return (
     <form onSubmit={handleSubmit(props.onSubmit)}>
       <input
-        name='name'
-        className='name'
+        name='productId'
+        className='productId'
         defaultValue=''
         ref={register({required: true})}
       />
-      {errors.name && <span>Name is required</span>}
+      {errors.productId && <span>Product id is required</span>}
+
+      <input
+        name='amount'
+        className='amount'
+        defaultValue=''
+        ref={register({required: true})}
+      />
+      {errors.amount && <span>Amount is required</span>}
 
       <input type='submit' />
     </form>

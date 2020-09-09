@@ -1,4 +1,5 @@
-fragment MealFragment on Meal {
+fragment Meal on Meal {
+  id
   mealType {
     name
   }

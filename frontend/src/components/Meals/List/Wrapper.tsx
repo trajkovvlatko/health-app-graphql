@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {useApolloClient} from '@apollo/client';
-import {Meal, useMealsLazyQuery} from 'generated/graphql';
+import {MealFragment, useMealsLazyQuery} from 'generated/graphql';
 import './Wrapper.scss';
 import Message from 'components/Shared/Message/Message';
 import Loading from 'components/Shared/Loading/Loading';
 import mealsStore from 'redux/stores/Meal';
-import IMeal from 'interfaces/IMeal';
 import {setMeals} from 'redux/actions/Meals';
 
 function ListMealsWrapper() {
-  const [mealsList, setMealsList] = useState<IMeal[]>([]);
+  const [mealsList, setMealsList] = useState<MealFragment[]>([]);
   mealsStore.subscribe(() => setMealsList(mealsStore.getState().mealsReducer));
 
   const [loadMeals, {error, loading}] = useMealsLazyQuery({
@@ -24,6 +23,7 @@ function ListMealsWrapper() {
   useEffect(() => {
     loadMeals();
   }, [loadMeals]);
+  console.log(mealsList);
 
   return (
     <div>
@@ -31,7 +31,7 @@ function ListMealsWrapper() {
       {loading && <Loading />}
       {error && <Message type='error' title='Cannot fetch meals.' />}
 
-      {mealsList && mealsList.map((m: Meal) => m.mealType).join(', ')}
+      {mealsList && mealsList.map((m: MealFragment) => m.id).join(', ')}
     </div>
   );
 }

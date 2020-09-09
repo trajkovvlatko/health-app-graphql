@@ -1,5 +1,5 @@
 query Meal($id: Int!) {
   meal(id: $id) {
-    ...MealFragment
+    ...Meal
   }
 }

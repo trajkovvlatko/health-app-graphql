@@ -6,6 +6,6 @@ input MealInput {
 
 mutation AddMeal($input: MealInput!) {
   addMeal(input: $input) {
-    ...MealFragment
+    ...Meal
   }
 }

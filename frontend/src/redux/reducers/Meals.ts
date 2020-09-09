@@ -1,9 +1,9 @@
 import IMeal from 'interfaces/IMeal';
 
-interface IAction {
-  type: string;
-  payload: IMeal | IMeal[] | number;
-}
+// interface IAction {
+//   type: string;
+//   payload: MealsQuery | MealsQuery[] | number;
+// }
 
 export const MEALS_SET = 'MEALS/SET';
 export const MEALS_ADD = 'MEALS/ADD';
@@ -11,7 +11,7 @@ export const MEALS_REMOVE = 'MEALS/REMOVE';
 
 const defaultStore: IMeal[] = [];
 
-export default function mealsReducer(state = defaultStore, action: IAction) {
+export default function mealsReducer(state = defaultStore, action: any) {
   switch (action.type) {
     case MEALS_ADD:
       return [action.payload, ...state];

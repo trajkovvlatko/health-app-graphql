@@ -5,15 +5,14 @@ import './Wrapper.scss';
 import Message from 'components/Shared/Message/Message';
 import Loading from 'components/Shared/Loading/Loading';
 import mealsStore from 'redux/stores/Meal';
-import {useAddMealMutation} from 'generated/graphql';
+import {MealFragment, useAddMealMutation} from 'generated/graphql';
 import {addMeal} from 'redux/actions/Meals';
-import IMeal from 'interfaces/IMeal';
 
 const initialState = {
   error: false,
   loading: false,
   success: false,
-  result: {} as IMeal,
+  result: {} as MealFragment,
 };
 
 function AddMealWrapper() {
@@ -22,8 +21,16 @@ function AddMealWrapper() {
 
   const onSubmit = async (values: IForm) => {
     setState({...initialState, loading: true});
+
+    // TODO: this should fill a store and render only.
+    // Do not save until the save button is clicked.
+    const products = [
+      {productId: 1, amount: 22},
+      {productId: 2, amount: 33},
+    ];
+    const input = {mealTypeId: 1, userId: 1, products};
     const res = await addMealMutation({
-      variables: {input: {mealType: values.name}},
+      variables: {input},
       update: (cache) => {
         cache.evict({fieldName: 'meals:{}'});
       },
