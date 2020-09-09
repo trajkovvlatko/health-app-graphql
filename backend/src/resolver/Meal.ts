@@ -44,6 +44,7 @@ export default class MealResolver {
 
   @Mutation(() => Meal)
   async addMeal(@Arg('input') input: MealInput): Promise<Meal> {
-    return Meal.create({...input}).save();
+    // TODO!
+    return null; // Meal.create({...input}).save();
   }
 }

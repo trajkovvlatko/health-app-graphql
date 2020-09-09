@@ -8,26 +8,18 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import MealProduct from './MealProduct';
+import Meal from './Meal';
 
 @Entity()
 @ObjectType()
-export default class Product extends BaseEntity {
+export default class MealType extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field()
-  id: number;
+  id!: number;
 
-  @Column({unique: true})
   @Field()
+  @Column()
   name!: string;
-
-  @Column()
-  @Field()
-  measure!: string;
-
-  @Column()
-  @Field()
-  calories!: number;
 
   @Column({default: true})
   @Field()
@@ -41,6 +33,6 @@ export default class Product extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => MealProduct, (mealProduct) => mealProduct.product)
-  mealProducts: MealProduct[];
+  @OneToMany(() => Meal, (meal) => meal.mealType)
+  meals: Meal[];
 }

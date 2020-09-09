@@ -1,28 +1,40 @@
 import {Field, ObjectType} from 'type-graphql';
-import Product from './Product';
 import {
   Entity,
   PrimaryGeneratedColumn,
-  Column,
   BaseEntity,
-  ManyToMany,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import User from './User';
+import MealProduct from './MealProduct';
+import MealType from './MealType';
 
 @Entity()
 @ObjectType()
 export default class Meal extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field()
-  id: number;
-
-  @Column({nullable: true}) // TODO: Not nullable
-  userId: string;
+  id!: number;
 
   @Field()
-  @Column({nullable: true})
-  mealType: string;
+  @ManyToOne(() => User, (user) => user, {nullable: false})
+  user!: User;
 
-  @Field(() => [Product], {nullable: true})
-  @ManyToMany(() => Product, (product: Product) => product.meals)
-  products: Product[];
+  @Field()
+  @ManyToOne(() => MealType, (mealType) => mealType, {nullable: false})
+  mealType!: MealType;
+
+  @Field(() => String)
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Field(() => String)
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @OneToMany(() => MealProduct, (mealProduct) => mealProduct.meal)
+  mealProducts: MealProduct[];
 }
