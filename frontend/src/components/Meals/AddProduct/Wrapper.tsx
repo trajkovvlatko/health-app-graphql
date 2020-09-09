@@ -47,7 +47,7 @@ function AddMealWrapper() {
 
   return (
     <div>
-      <b>Add a meal</b>
+      <b>Add product for this meal</b>
       {state.error && <Message type='error' title='An error occured.' />}
       {state.loading && <Loading />}
       {state.result.id && <Message type='success' title='Saved.' />}

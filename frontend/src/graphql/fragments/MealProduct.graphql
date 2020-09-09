@@ -1,0 +1,6 @@
+fragment MealProduct on MealProduct {
+  amount
+  product {
+    ...Product
+  }
+}

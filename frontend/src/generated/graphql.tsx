@@ -122,12 +122,22 @@ export type MealFragment = (
     & Pick<MealType, 'name'>
   ), mealProducts: Array<(
     { __typename?: 'MealProduct' }
-    & Pick<MealProduct, 'amount'>
-    & { product: (
-      { __typename?: 'Product' }
-      & Pick<Product, 'name' | 'measure' | 'calories'>
-    ) }
+    & MealProductFragment
   )> }
+);
+
+export type MealProductFragment = (
+  { __typename?: 'MealProduct' }
+  & Pick<MealProduct, 'amount'>
+  & { product: (
+    { __typename?: 'Product' }
+    & ProductFragment
+  ) }
+);
+
+export type ProductFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'name' | 'measure' | 'calories'>
 );
 
 export type AddMealMutationVariables = Exact<{
@@ -208,6 +218,21 @@ export type ProductsQuery = (
   )>> }
 );
 
+export const ProductFragmentDoc = gql`
+    fragment Product on Product {
+  name
+  measure
+  calories
+}
+    `;
+export const MealProductFragmentDoc = gql`
+    fragment MealProduct on MealProduct {
+  amount
+  product {
+    ...Product
+  }
+}
+    ${ProductFragmentDoc}`;
 export const MealFragmentDoc = gql`
     fragment Meal on Meal {
   id
@@ -215,15 +240,10 @@ export const MealFragmentDoc = gql`
     name
   }
   mealProducts {
-    amount
-    product {
-      name
-      measure
-      calories
-    }
+    ...MealProduct
   }
 }
-    `;
+    ${MealProductFragmentDoc}`;
 export const AddMealDocument = gql`
     mutation AddMeal($input: MealInput!) {
   addMeal(input: $input) {

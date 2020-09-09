@@ -6,6 +6,7 @@ import Message from 'components/Shared/Message/Message';
 import Loading from 'components/Shared/Loading/Loading';
 import mealsStore from 'redux/stores/Meal';
 import {setMeals} from 'redux/actions/Meals';
+import ListMealsRow from './Row';
 
 function ListMealsWrapper() {
   const [mealsList, setMealsList] = useState<MealFragment[]>([]);
@@ -23,15 +24,17 @@ function ListMealsWrapper() {
   useEffect(() => {
     loadMeals();
   }, [loadMeals]);
-  console.log(mealsList);
 
   return (
     <div>
-      <h3>Today:</h3>
+      <h3>Meals list:</h3>
       {loading && <Loading />}
       {error && <Message type='error' title='Cannot fetch meals.' />}
 
-      {mealsList && mealsList.map((m: MealFragment) => m.id).join(', ')}
+      {mealsList &&
+        mealsList.map((meal: MealFragment) => (
+          <ListMealsRow key={`meal-key-${meal.id}`} meal={meal} />
+        ))}
     </div>
   );
 }

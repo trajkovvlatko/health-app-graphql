@@ -15,6 +15,7 @@ function AddMealForm(props: IProps) {
         name='productId'
         className='productId'
         defaultValue=''
+        placeholder='Product ID'
         ref={register({required: true})}
       />
       {errors.productId && <span>Product id is required</span>}
@@ -23,6 +24,7 @@ function AddMealForm(props: IProps) {
         name='amount'
         className='amount'
         defaultValue=''
+        placeholder='Amount'
         ref={register({required: true})}
       />
       {errors.amount && <span>Amount is required</span>}

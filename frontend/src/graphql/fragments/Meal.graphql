@@ -4,11 +4,6 @@ fragment Meal on Meal {
     name
   }
   mealProducts {
-    amount
-    product {
-      name
-      measure
-      calories
-    }
+    ...MealProduct
   }
 }
