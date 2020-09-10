@@ -7,8 +7,10 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import MealProduct from './MealProduct';
+import User from './User';
 
 @Entity()
 @ObjectType()
@@ -43,4 +45,11 @@ export default class Product extends BaseEntity {
 
   @OneToMany(() => MealProduct, (mealProduct) => mealProduct.product)
   mealProducts: MealProduct[];
+
+  @Field()
+  @ManyToOne(() => User, (user) => user, {nullable: true})
+  user: User;
+
+  @Column({nullable: true})
+  userId: number;
 }

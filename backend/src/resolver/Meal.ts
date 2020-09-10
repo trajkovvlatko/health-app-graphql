@@ -148,15 +148,22 @@ export default class MealResolver {
     await meal.save();
 
     const promises = input.products.map(async (p: ProductInput) => {
-      const mealProduct = new MealProduct();
-      mealProduct.meal = meal;
-      mealProduct.product = await Product.findOne(p.productId, {
-        where: {
-          active: true,
-        },
-      });
-      mealProduct.amount = p.amount;
-      await mealProduct.save();
+      const product = await getConnection()
+        .getRepository(Product)
+        .createQueryBuilder('product')
+        .where({id: p.productId, active: true, userId: null})
+        .orWhere(`id = :productId AND active IS TRUE AND "userId" = :userId`, {
+          userId: req.user.id,
+          productId: p.productId,
+        })
+        .getOne();
+      if (product) {
+        const mealProduct = new MealProduct();
+        mealProduct.meal = meal;
+        mealProduct.product = product;
+        mealProduct.amount = p.amount;
+        await mealProduct.save();
+      }
     });
     await Promise.all(promises);
 
