@@ -10,7 +10,6 @@ import ListMealsRow from './Row';
 
 function MealsListWrapper() {
   const [mealsList, setMealsList] = useState<MealFragment[]>([]);
-  store.subscribe(() => setMealsList(store.getState().mealsReducer));
 
   const [loadMeals, {error, loading}] = useMealsLazyQuery({
     client: useApolloClient(),
@@ -22,7 +21,11 @@ function MealsListWrapper() {
   });
 
   useEffect(() => {
+    const unsubscribe = store.subscribe(() =>
+      setMealsList(store.getState().meals.stored),
+    );
     loadMeals();
+    return unsubscribe;
   }, [loadMeals]);
 
   return (

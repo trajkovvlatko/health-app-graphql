@@ -3,4 +3,5 @@ fragment MealProduct on MealProduct {
   product {
     ...Product
   }
+  createdAt
 }

@@ -3,6 +3,6 @@ import mealsReducer from './Meals';
 import userReducer from './User';
 
 export default combineReducers({
-  mealsReducer,
-  userReducer,
+  meals: mealsReducer,
+  user: userReducer,
 });

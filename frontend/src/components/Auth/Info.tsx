@@ -9,7 +9,7 @@ import Message from 'components/Shared/Message/Message';
 
 function AuthInfo() {
   const [profile, setProfile] = useState<IUser | null>(null);
-  store.subscribe(() => setProfile(store.getState().userReducer));
+  store.subscribe(() => setProfile(store.getState().user));
 
   const [loadProfile, {error, loading}] = useProfileLazyQuery({
     client: useApolloClient(),

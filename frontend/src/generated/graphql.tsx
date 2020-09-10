@@ -165,7 +165,7 @@ export type MealFragment = (
 
 export type MealProductFragment = (
   { __typename?: 'MealProduct' }
-  & Pick<MealProduct, 'amount'>
+  & Pick<MealProduct, 'amount' | 'createdAt'>
   & { product: (
     { __typename?: 'Product' }
     & ProductFragment
@@ -315,6 +315,7 @@ export const MealProductFragmentDoc = gql`
   product {
     ...Product
   }
+  createdAt
 }
     ${ProductFragmentDoc}`;
 export const MealFragmentDoc = gql`
