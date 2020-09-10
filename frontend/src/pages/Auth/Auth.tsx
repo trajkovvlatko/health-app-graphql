@@ -4,7 +4,9 @@ import IForm from 'interfaces/IForm';
 import React from 'react';
 import {useLoginMutation, useRegisterMutation} from 'generated/graphql';
 import {useHistory} from 'react-router-dom';
+import store from 'redux/Store';
 import './Auth.scss';
+import {setUser} from 'redux/actions/User';
 
 function Auth() {
   const [login] = useLoginMutation();
@@ -23,7 +25,7 @@ function Auth() {
       return;
     }
     if (res.data?.login?.user?.id) {
-      history.push('/meals');
+      onSuccess(res.data.login.user);
     }
   };
 
@@ -39,8 +41,13 @@ function Auth() {
       return;
     }
     if (res.data?.register?.user?.id) {
-      history.push('/meals');
+      onSuccess(res.data.register.user);
     }
+  };
+
+  const onSuccess = ({id, email}: {id: number; email: string}) => {
+    store.dispatch(setUser({id, email}));
+    history.push('/meals');
   };
 
   return (

@@ -32,7 +32,7 @@ export default async function (): Promise<void> {
       name: process.env.COOKIE_NAME,
       secret: process.env.SESSION_SECRET,
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       store: new TypeormStore({
         cleanupLimit: 2,
         ttl: 86400,
