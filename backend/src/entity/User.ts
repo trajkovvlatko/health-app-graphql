@@ -36,6 +36,7 @@ export default class User extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @Field(() => [Meal])
   @OneToMany(() => Meal, (meal) => meal.user)
   meals: Meal[];
 }
