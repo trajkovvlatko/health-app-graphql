@@ -6,10 +6,14 @@ import {
   InputType,
   Field,
   Mutation,
+  UseMiddleware,
+  Ctx,
 } from 'type-graphql';
 import Meal from '../entity/Meal';
 import MealProduct from '../entity/MealProduct';
 import Product from '../entity/Product';
+import withUser from '../middlewares/withUser';
+import {TContext} from '../types/TContext';
 
 @InputType()
 class ProductInput {
@@ -24,9 +28,6 @@ class ProductInput {
 class MealInput {
   @Field()
   mealTypeId: number;
-
-  @Field()
-  userId: number;
 
   @Field(() => [ProductInput])
   products: ProductInput[];
@@ -55,10 +56,17 @@ export default class MealResolver {
   //   }
   // }
   @Query(() => Meal, {nullable: true})
-  meal(@Arg('id', () => Int) id: number): Promise<Meal> {
+  @UseMiddleware(withUser)
+  meal(
+    @Arg('id', () => Int) id: number,
+    @Ctx() {req}: TContext,
+  ): Promise<Meal> {
     return Meal.findOne(id, {
       relations,
-      where: activeProducts,
+      where: {
+        userId: req.user.id,
+        // activeProducts,
+      },
     });
   }
 
@@ -79,16 +87,21 @@ export default class MealResolver {
   //   }
   // }
   @Query(() => [Meal], {nullable: true})
+  @UseMiddleware(withUser)
   meals(
     @Arg('take', () => Int, {nullable: true}) take: number | null,
     @Arg('skip', () => Int, {nullable: true}) skip: number | null,
+    @Ctx() {req}: TContext,
   ): Promise<Meal[]> {
     if (!take || take > 10 || take < 1) take = 10;
     if (!skip || skip < 0) skip = 0;
 
     return Meal.find({
       relations,
-      where: activeProducts,
+      where: {
+        // activeProducts,
+        userId: req.user.id,
+      },
       take,
       skip,
       order: {
@@ -102,7 +115,6 @@ export default class MealResolver {
   //   addMeal(
   //     input: {
   //       mealTypeId: 1
-  //       userId: 1
   //       products: [
   //         { productId: 1, amount: 3 }
   //         { productId: 2, amount: 2 }
@@ -124,9 +136,13 @@ export default class MealResolver {
   //   }
   // }
   @Mutation(() => Meal)
-  async addMeal(@Arg('input') input: MealInput): Promise<Meal> {
+  @UseMiddleware(withUser)
+  async addMeal(
+    @Arg('input') input: MealInput,
+    @Ctx() {req}: TContext,
+  ): Promise<Meal> {
     const meal = new Meal();
-    meal.userId = input.userId;
+    meal.userId = req.user.id;
     meal.mealTypeId = input.mealTypeId;
     await meal.save();
 
