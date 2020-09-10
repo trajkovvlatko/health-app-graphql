@@ -9,6 +9,7 @@ import {
   UseMiddleware,
   Ctx,
 } from 'type-graphql';
+import {getConnection} from 'typeorm';
 import Meal from '../entity/Meal';
 import MealProduct from '../entity/MealProduct';
 import Product from '../entity/Product';
@@ -34,8 +35,6 @@ class MealInput {
 }
 
 const relations = ['mealType', 'mealProducts', 'mealProducts.product'];
-// TODO: Fix the relation name here, use ActiveRecord
-const activeProducts = `"Meal__mealProducts__product"."active" IS TRUE`;
 
 @Resolver(Meal)
 export default class MealResolver {
@@ -61,13 +60,15 @@ export default class MealResolver {
     @Arg('id', () => Int) id: number,
     @Ctx() {req}: TContext,
   ): Promise<Meal> {
-    return Meal.findOne(id, {
-      relations,
-      where: {
-        userId: req.user.id,
-        // activeProducts,
-      },
-    });
+    return getConnection()
+      .getRepository(Meal)
+      .createQueryBuilder('meal')
+      .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
+      .innerJoinAndSelect('mealProducts.product', 'products')
+      .innerJoinAndSelect('meal.mealType', 'mealType')
+      .where({id: id, userId: req.user.id})
+      .andWhere('products.active IS TRUE')
+      .getOne();
   }
 
   // Example:
@@ -96,18 +97,18 @@ export default class MealResolver {
     if (!take || take > 10 || take < 1) take = 10;
     if (!skip || skip < 0) skip = 0;
 
-    return Meal.find({
-      relations,
-      where: {
-        // activeProducts,
-        userId: req.user.id,
-      },
-      take,
-      skip,
-      order: {
-        id: 'DESC',
-      },
-    });
+    return getConnection()
+      .getRepository(Meal)
+      .createQueryBuilder('meal')
+      .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
+      .innerJoinAndSelect('mealProducts.product', 'products')
+      .innerJoinAndSelect('meal.mealType', 'mealType')
+      .where({userId: req.user.id})
+      .andWhere('products.active IS TRUE')
+      .skip(skip)
+      .take(take)
+      .orderBy('meal.id', 'DESC')
+      .getMany();
   }
 
   // Example:
@@ -149,7 +150,11 @@ export default class MealResolver {
     const promises = input.products.map(async (p: ProductInput) => {
       const mealProduct = new MealProduct();
       mealProduct.meal = meal;
-      mealProduct.product = await Product.findOne(p.productId);
+      mealProduct.product = await Product.findOne(p.productId, {
+        where: {
+          active: true,
+        },
+      });
       mealProduct.amount = p.amount;
       await mealProduct.save();
     });
