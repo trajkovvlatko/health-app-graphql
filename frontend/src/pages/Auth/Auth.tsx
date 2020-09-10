@@ -3,11 +3,13 @@ import Register from 'components/Auth/Register';
 import IForm from 'interfaces/IForm';
 import React from 'react';
 import {useLoginMutation, useRegisterMutation} from 'generated/graphql';
+import {useHistory} from 'react-router-dom';
 import './Auth.scss';
 
 function Auth() {
   const [login] = useLoginMutation();
   const [register] = useRegisterMutation();
+  const history = useHistory();
 
   const onLogin = async (values: IForm) => {
     const res = await login({
@@ -21,7 +23,7 @@ function Auth() {
       return;
     }
     if (res.data?.login?.user?.id) {
-      console.log(res.data.login.user);
+      history.push('/meals');
     }
   };
 
@@ -37,7 +39,7 @@ function Auth() {
       return;
     }
     if (res.data?.register?.user?.id) {
-      console.log(res.data.register.user);
+      history.push('/meals');
     }
   };
 

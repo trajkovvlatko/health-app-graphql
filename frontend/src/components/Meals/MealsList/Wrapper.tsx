@@ -4,19 +4,19 @@ import {MealFragment, useMealsLazyQuery} from 'generated/graphql';
 import './Wrapper.scss';
 import Message from 'components/Shared/Message/Message';
 import Loading from 'components/Shared/Loading/Loading';
-import mealsStore from 'redux/stores/Meal';
+import store from 'redux/Store';
 import {setMeals} from 'redux/actions/Meals';
 import ListMealsRow from './Row';
 
 function MealsListWrapper() {
   const [mealsList, setMealsList] = useState<MealFragment[]>([]);
-  mealsStore.subscribe(() => setMealsList(mealsStore.getState().mealsReducer));
+  store.subscribe(() => setMealsList(store.getState().mealsReducer));
 
   const [loadMeals, {error, loading}] = useMealsLazyQuery({
     client: useApolloClient(),
     onCompleted: (res) => {
       if (res.meals) {
-        mealsStore.dispatch(setMeals(res.meals));
+        store.dispatch(setMeals(res.meals));
       }
     },
   });

@@ -1,17 +1,12 @@
 import IMeal from 'interfaces/IMeal';
 
-// interface IAction {
-//   type: string;
-//   payload: MealsQuery | MealsQuery[] | number;
-// }
-
 export const MEALS_SET = 'MEALS/SET';
 export const MEALS_ADD = 'MEALS/ADD';
 export const MEALS_REMOVE = 'MEALS/REMOVE';
 
-const defaultStore: IMeal[] = [];
+const defaultState: IMeal[] = [];
 
-export default function mealsReducer(state = defaultStore, action: any) {
+export default function mealsReducer(state = defaultState, action: any) {
   switch (action.type) {
     case MEALS_ADD:
       return [action.payload, ...state];

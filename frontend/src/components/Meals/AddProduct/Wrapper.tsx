@@ -4,7 +4,7 @@ import IForm from 'interfaces/IForm';
 import './Wrapper.scss';
 import Message from 'components/Shared/Message/Message';
 import Loading from 'components/Shared/Loading/Loading';
-import mealsStore from 'redux/stores/Meal';
+import store from 'redux/Store';
 import {MealFragment, useAddMealMutation} from 'generated/graphql';
 import {addMeal} from 'redux/actions/Meals';
 
@@ -41,7 +41,7 @@ function AddMealWrapper() {
     }
     if (res.data?.addMeal?.id) {
       setState({...initialState, loading: false, result: res.data.addMeal});
-      mealsStore.dispatch(addMeal(res.data.addMeal));
+      store.dispatch(addMeal(res.data.addMeal));
     }
   };
 
