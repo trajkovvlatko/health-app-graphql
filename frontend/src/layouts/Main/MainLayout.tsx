@@ -19,6 +19,7 @@ import Reminders from 'pages/Reminders/Reminders';
 import Reports from 'pages/Reports/Reports';
 import MyProducts from 'pages/MyProducts/MyProducts';
 import Profile from 'pages/Profile/Profile';
+import Auth from 'pages/Auth/Auth';
 
 function MainLayout() {
   const {sidebarState} = useContext(SidebarStateContext);
@@ -70,6 +71,10 @@ function MainLayout() {
 
             <Route path='/profile'>
               <Profile />
+            </Route>
+
+            <Route path='/auth'>
+              <Auth />
             </Route>
 
             <Route path='/'>

@@ -18,6 +18,7 @@ export type Query = {
   products?: Maybe<Array<Product>>;
   findProducts?: Maybe<Array<Product>>;
   mealTypes?: Maybe<Array<MealType>>;
+  profile?: Maybe<User>;
 };
 
 
@@ -61,6 +62,7 @@ export type User = {
   active: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  meals: Array<Meal>;
 };
 
 export type MealType = {
@@ -91,11 +93,16 @@ export type Product = {
   active: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  user: User;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   addMeal: Meal;
+  addProduct: ProductResponse;
+  login: UserResponse;
+  register: UserResponse;
+  logout: Scalars['Boolean'];
 };
 
 
@@ -103,15 +110,45 @@ export type MutationAddMealArgs = {
   input: MealInput;
 };
 
+
+export type MutationAddProductArgs = {
+  calories: Scalars['Float'];
+  measure: Scalars['String'];
+  name: Scalars['String'];
+};
+
+
+export type MutationLoginArgs = {
+  password: Scalars['String'];
+  email: Scalars['String'];
+};
+
+
+export type MutationRegisterArgs = {
+  password: Scalars['String'];
+  email: Scalars['String'];
+};
+
 export type MealInput = {
   mealTypeId: Scalars['Float'];
-  userId: Scalars['Float'];
   products: Array<ProductInput>;
 };
 
 export type ProductInput = {
   productId: Scalars['Float'];
   amount: Scalars['Float'];
+};
+
+export type ProductResponse = {
+  __typename?: 'ProductResponse';
+  error?: Maybe<Scalars['String']>;
+  product?: Maybe<Product>;
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  error?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
 };
 
 export type MealFragment = (
@@ -150,6 +187,42 @@ export type AddMealMutation = (
   & { addMeal: (
     { __typename?: 'Meal' }
     & MealFragment
+  ) }
+);
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type LoginMutation = (
+  { __typename?: 'Mutation' }
+  & { login: (
+    { __typename?: 'UserResponse' }
+    & Pick<UserResponse, 'error'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email'>
+    )> }
+  ) }
+);
+
+export type RegisterMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type RegisterMutation = (
+  { __typename?: 'Mutation' }
+  & { register: (
+    { __typename?: 'UserResponse' }
+    & Pick<UserResponse, 'error'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email'>
+    )> }
   ) }
 );
 
@@ -276,6 +349,80 @@ export function useAddMealMutation(baseOptions?: Apollo.MutationHookOptions<AddM
 export type AddMealMutationHookResult = ReturnType<typeof useAddMealMutation>;
 export type AddMealMutationResult = Apollo.MutationResult<AddMealMutation>;
 export type AddMealMutationOptions = Apollo.BaseMutationOptions<AddMealMutation, AddMealMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    error
+    user {
+      id
+      email
+    }
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const RegisterDocument = gql`
+    mutation Register($email: String!, $password: String!) {
+  register(email: $email, password: $password) {
+    error
+    user {
+      id
+      email
+    }
+  }
+}
+    `;
+export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
+
+/**
+ * __useRegisterMutation__
+ *
+ * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerMutation, { data, loading, error }] = useRegisterMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
+        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
+      }
+export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
+export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const FindProductsDocument = gql`
     query FindProducts($name: String!) {
   findProducts(name: $name) {

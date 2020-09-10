@@ -66,6 +66,11 @@ function Sidebar() {
             Profile
           </NavLink>
         </li>
+        <li>
+          <NavLink exact to='/auth' activeClassName='active'>
+            Auth
+          </NavLink>
+        </li>
       </ul>
 
       <button onClick={toggle}>Toggle sidebar</button>

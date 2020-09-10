@@ -3,12 +3,26 @@ import ReactDOM from 'react-dom';
 import MainLayout from 'layouts/Main/MainLayout';
 import {SidebarStateProvider} from 'contexts/SidebarStateContext';
 import * as serviceWorker from './serviceWorker';
-import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from '@apollo/client';
 import './index.css';
 
+const host = process.env.REACT_APP_HOST;
+const uri = `${host}/graphql`;
+
+const link = createHttpLink({
+  uri,
+  credentials: 'include',
+});
+
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri,
   cache: new InMemoryCache(),
+  link,
 });
 
 ReactDOM.render(
