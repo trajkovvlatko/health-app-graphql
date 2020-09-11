@@ -6,13 +6,13 @@ interface IProps {
   onSubmit: SubmitHandler<Record<string, any>>;
 }
 
-function AddMealForm(props: IProps) {
+function AddMealProductForm(props: IProps) {
   const {register, handleSubmit, errors} = useForm();
 
   return (
     <form onSubmit={handleSubmit(props.onSubmit)}>
       <input
-        name='productId'
+        name='id'
         className='productId'
         defaultValue=''
         placeholder='Product ID'
@@ -34,4 +34,4 @@ function AddMealForm(props: IProps) {
   );
 }
 
-export default AddMealForm;
+export default AddMealProductForm;

@@ -1,60 +1,27 @@
-import React, {useState} from 'react';
-import AddMealForm from './Form';
+import React from 'react';
+import AddMealProductForm from './Form';
 import IForm from 'interfaces/IForm';
 import './Wrapper.scss';
-import Message from 'components/Shared/Message/Message';
-import Loading from 'components/Shared/Loading/Loading';
 import store from 'redux/Store';
-import {MealFragment, useAddMealMutation} from 'generated/graphql';
-import {addMeal} from 'redux/actions/Meals';
+import {addPendingProduct} from 'redux/actions/Meals';
 
-const initialState = {
-  error: false,
-  loading: false,
-  success: false,
-  result: {} as MealFragment,
-};
-
-function AddMealWrapper() {
-  const [state, setState] = useState(initialState);
-  const [addMealMutation] = useAddMealMutation();
-
+function AddMealProductWrapper() {
   const onSubmit = async (values: IForm) => {
-    setState({...initialState, loading: true});
-
-    // TODO: this should fill a store and render only.
-    // Do not save until the save button is clicked.
-    const products = [
-      {productId: 1, amount: 22},
-      {productId: 2, amount: 33},
-    ];
-    const input = {mealTypeId: 1, userId: 1, products};
-    const res = await addMealMutation({
-      variables: {input},
-      update: (cache) => {
-        cache.evict({fieldName: 'meals:{}'});
-      },
-    });
-    if (res && res.errors && res.errors.length > 0) {
-      setState({...initialState, loading: false, error: true});
-      return;
-    }
-    if (res.data?.addMeal?.id) {
-      setState({...initialState, loading: false, result: res.data.addMeal});
-      store.dispatch(addMeal(res.data.addMeal));
-    }
+    store.dispatch(
+      addPendingProduct({
+        id: values.id,
+        amount: values.amount,
+      }),
+    );
   };
 
   return (
     <div>
       <b>Add product for this meal</b>
-      {state.error && <Message type='error' title='An error occured.' />}
-      {state.loading && <Loading />}
-      {state.result.id && <Message type='success' title='Saved.' />}
 
-      <AddMealForm onSubmit={onSubmit} />
+      <AddMealProductForm onSubmit={onSubmit} />
     </div>
   );
 }
 
-export default AddMealWrapper;
+export default AddMealProductWrapper;
