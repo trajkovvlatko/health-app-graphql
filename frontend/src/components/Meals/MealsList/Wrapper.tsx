@@ -9,7 +9,9 @@ import {setMeals} from 'redux/actions/Meals';
 import ListMealsRow from './Row';
 
 function MealsListWrapper() {
-  const [mealsList, setMealsList] = useState<MealFragment[]>([]);
+  const [mealsList, setMealsList] = useState<MealFragment[]>(
+    store.getState().meals.stored,
+  );
 
   const [loadMeals, {error, loading}] = useMealsLazyQuery({
     client: useApolloClient(),
@@ -21,9 +23,9 @@ function MealsListWrapper() {
   });
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() =>
-      setMealsList(store.getState().meals.stored),
-    );
+    const unsubscribe = store.subscribe(() => {
+      setMealsList(store.getState().meals.stored);
+    });
     loadMeals();
     return unsubscribe;
   }, [loadMeals]);
