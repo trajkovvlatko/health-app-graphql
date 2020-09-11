@@ -9,7 +9,7 @@ function MealPendingProductsItem(props: IProps) {
   const {product} = props;
   return (
     <div>
-      {product.productId} - {product.amount}
+      {product.productName} - {product.amount}
     </div>
   );
 }

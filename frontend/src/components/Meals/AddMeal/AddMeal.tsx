@@ -1,5 +1,6 @@
 import {useApolloClient} from '@apollo/client';
 import {useAddMealMutation} from 'generated/graphql';
+import IMealProduct from 'interfaces/IMealProduct';
 import React from 'react';
 import {addMeal, clearPendingProducts} from 'redux/actions/Meals';
 import {setMealType} from 'redux/actions/MealType';
@@ -12,7 +13,12 @@ function AddMeal() {
 
   const onClick = async () => {
     const state = store.getState();
-    const products = state.meals.pending;
+    const products = state.meals.pending.map((p: IMealProduct) => {
+      return {
+        productId: p.productId,
+        amount: p.amount,
+      };
+    });
     const mealTypeId = state.mealType?.id;
 
     if (!mealTypeId) return alert('Set meal type first.');

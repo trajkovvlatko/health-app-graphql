@@ -243,7 +243,7 @@ export type FindProductsQuery = (
   { __typename?: 'Query' }
   & { findProducts?: Maybe<Array<(
     { __typename?: 'Product' }
-    & Pick<Product, 'name' | 'measure' | 'calories'>
+    & Pick<Product, 'id' | 'name' | 'measure' | 'calories'>
   )>> }
 );
 
@@ -475,6 +475,7 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutatio
 export const FindProductsDocument = gql`
     query FindProducts($name: String!) {
   findProducts(name: $name) {
+    id
     name
     measure
     calories

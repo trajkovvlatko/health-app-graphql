@@ -23,8 +23,6 @@ export default function mealsReducer(
 ): IMealsState {
   switch (action.type) {
     case MEALS_ADD:
-      console.log(action.payload);
-      console.log(state.stored);
       return {...state, stored: [action.payload, ...state.stored]};
 
     case MEALS_REMOVE:

@@ -10,6 +10,7 @@ function AddMealProductWrapper() {
     store.dispatch(
       addPendingProduct({
         productId: parseInt(values.productId),
+        productName: values.productName,
         amount: parseInt(values.amount),
       }),
     );
