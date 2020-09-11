@@ -267,7 +267,7 @@ export type MealTypeQuery = (
   { __typename?: 'Query' }
   & { mealTypes?: Maybe<Array<(
     { __typename?: 'MealType' }
-    & Pick<MealType, 'name'>
+    & Pick<MealType, 'id' | 'name'>
   )>> }
 );
 
@@ -543,6 +543,7 @@ export type MealQueryResult = Apollo.QueryResult<MealQuery, MealQueryVariables>;
 export const MealTypeDocument = gql`
     query MealType {
   mealTypes {
+    id
     name
   }
 }
