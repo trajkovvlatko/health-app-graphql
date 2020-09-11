@@ -12,7 +12,7 @@ function AddMealProductForm(props: IProps) {
   return (
     <form onSubmit={handleSubmit(props.onSubmit)}>
       <input
-        name='id'
+        name='productId'
         className='productId'
         defaultValue=''
         placeholder='Product ID'

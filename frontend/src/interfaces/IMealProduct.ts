@@ -1,4 +1,4 @@
 export default interface IMealProduct {
-  id: number;
+  productId: number;
   amount: number;
 }

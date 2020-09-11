@@ -1,3 +1,4 @@
+import AddMeal from 'components/Meals/AddMeal/AddMeal';
 import AddMealProductWrapper from 'components/Meals/AddProduct/Wrapper';
 import MealsListWrapper from 'components/Meals/MealsList/Wrapper';
 import MealTypeForm from 'components/Meals/MealType/Form';
@@ -9,9 +10,12 @@ function Meals() {
   return (
     <div className='meals-page'>
       <h1>Meals page</h1>
-      <MealTypeForm />
-      <AddMealProductWrapper />
-      <MealPendingProductsList />
+      <div>
+        <MealTypeForm />
+        <AddMealProductWrapper />
+        <MealPendingProductsList />
+        <AddMeal />
+      </div>
       ---------
       <MealsListWrapper />
     </div>

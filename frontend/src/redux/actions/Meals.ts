@@ -6,6 +6,7 @@ import {
   MEALS_SET,
   MEALS_ADD,
   MEALS_REMOVE,
+  MEAL_PRODUCT_CLEAR,
 } from 'redux/reducers/Meals';
 
 export function addMeal(meal: MealFragment) {
@@ -33,5 +34,11 @@ export function addPendingProduct(mealProduct: IMealProduct) {
   return {
     type: MEAL_PRODUCT_ADD,
     payload: mealProduct,
+  };
+}
+
+export function clearPendingProducts() {
+  return {
+    type: MEAL_PRODUCT_CLEAR,
   };
 }

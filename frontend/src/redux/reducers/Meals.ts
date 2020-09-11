@@ -5,21 +5,16 @@ export const MEALS_SET = 'MEALS/SET';
 export const MEALS_ADD = 'MEALS/ADD';
 export const MEALS_REMOVE = 'MEALS/REMOVE';
 export const MEAL_PRODUCT_ADD = 'MEAL_PRODUCT/ADD';
+export const MEAL_PRODUCT_CLEAR = 'MEAL_PRODUCT/CLEAR';
 
 interface IMealsState {
   stored: MealFragment[];
-  pending: {
-    products: IMealProduct[];
-    mealType: null | number;
-  };
+  pending: IMealProduct[];
 }
 
 const defaultState: IMealsState = {
   stored: [],
-  pending: {
-    products: [],
-    mealType: null,
-  },
+  pending: [],
 };
 
 export default function mealsReducer(
@@ -28,7 +23,9 @@ export default function mealsReducer(
 ): IMealsState {
   switch (action.type) {
     case MEALS_ADD:
-      return {...state, stored: [...action.payload, ...state.stored]};
+      console.log(action.payload);
+      console.log(state.stored);
+      return {...state, stored: [action.payload, ...state.stored]};
 
     case MEALS_REMOVE:
       return {
@@ -47,10 +44,13 @@ export default function mealsReducer(
     case MEAL_PRODUCT_ADD:
       return {
         ...state,
-        pending: {
-          mealType: state.pending.mealType,
-          products: [action.payload, ...state.pending.products],
-        },
+        pending: [action.payload, ...state.pending],
+      };
+
+    case MEAL_PRODUCT_CLEAR:
+      return {
+        ...state,
+        pending: [],
       };
 
     default:

@@ -12,6 +12,11 @@ import IMealType from 'interfaces/IMealType';
 function MealTypeForm() {
   const [activeId, setActiveId] = useState<null | number>(null);
 
+  store.subscribe(() => {
+    const activeId = store.getState().mealType?.id;
+    setActiveId(activeId || null);
+  });
+
   const {data, error, loading} = useMealTypeQuery({
     client: useApolloClient(),
   });

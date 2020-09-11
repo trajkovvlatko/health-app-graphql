@@ -7,7 +7,7 @@ interface IAction {
   payload: IMealType | null;
 }
 
-const defaultState = null;
+const defaultState: IMealType | null = null;
 
 export default function mealTypeReducer(state = defaultState, action: IAction) {
   switch (action.type) {

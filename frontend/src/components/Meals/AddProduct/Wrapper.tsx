@@ -9,8 +9,8 @@ function AddMealProductWrapper() {
   const onSubmit = async (values: IForm) => {
     store.dispatch(
       addPendingProduct({
-        id: values.id,
-        amount: values.amount,
+        productId: parseInt(values.productId),
+        amount: parseInt(values.amount),
       }),
     );
   };
