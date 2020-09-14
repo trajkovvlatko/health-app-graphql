@@ -19,7 +19,7 @@ export function addMeal(meal: MealFragment) {
 export function removeMeal(id: number) {
   return {
     type: MEALS_REMOVE,
-    id,
+    payload: id,
   };
 }
 

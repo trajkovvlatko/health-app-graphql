@@ -156,7 +156,7 @@ export type MealFragment = (
   & Pick<Meal, 'id'>
   & { mealType: (
     { __typename?: 'MealType' }
-    & Pick<MealType, 'name'>
+    & Pick<MealType, 'id' | 'name'>
   ), mealProducts: Array<(
     { __typename?: 'MealProduct' }
     & MealProductFragment
@@ -165,7 +165,7 @@ export type MealFragment = (
 
 export type MealProductFragment = (
   { __typename?: 'MealProduct' }
-  & Pick<MealProduct, 'amount' | 'createdAt'>
+  & Pick<MealProduct, 'id' | 'amount' | 'createdAt'>
   & { product: (
     { __typename?: 'Product' }
     & ProductFragment
@@ -174,7 +174,7 @@ export type MealProductFragment = (
 
 export type ProductFragment = (
   { __typename?: 'Product' }
-  & Pick<Product, 'name' | 'measure' | 'calories'>
+  & Pick<Product, 'id' | 'name' | 'measure' | 'calories'>
 );
 
 export type AddMealMutationVariables = Exact<{
@@ -312,6 +312,7 @@ export type ProfileQuery = (
 
 export const ProductFragmentDoc = gql`
     fragment Product on Product {
+  id
   name
   measure
   calories
@@ -319,6 +320,7 @@ export const ProductFragmentDoc = gql`
     `;
 export const MealProductFragmentDoc = gql`
     fragment MealProduct on MealProduct {
+  id
   amount
   product {
     ...Product
@@ -330,6 +332,7 @@ export const MealFragmentDoc = gql`
     fragment Meal on Meal {
   id
   mealType {
+    id
     name
   }
   mealProducts {

@@ -1,6 +1,7 @@
 fragment Meal on Meal {
   id
   mealType {
+    id
     name
   }
   mealProducts {
