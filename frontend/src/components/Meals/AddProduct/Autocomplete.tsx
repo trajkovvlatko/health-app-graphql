@@ -43,7 +43,6 @@ function AddProductAutocomplete(props: IProps) {
         onKeyUp={onKeyUp}
         name='productId'
         className='productId'
-        defaultValue=''
         placeholder='Search for products'
         autoComplete='off'
         value={value}

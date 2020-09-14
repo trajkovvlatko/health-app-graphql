@@ -1,16 +1,11 @@
 import {MealFragment} from 'generated/graphql';
-import IMealProduct from 'interfaces/IMealProduct';
+import IMealsState from 'interfaces/IMealState';
 
 export const MEALS_SET = 'MEALS/SET';
 export const MEALS_ADD = 'MEALS/ADD';
 export const MEALS_REMOVE = 'MEALS/REMOVE';
 export const MEAL_PRODUCT_ADD = 'MEAL_PRODUCT/ADD';
 export const MEAL_PRODUCT_CLEAR = 'MEAL_PRODUCT/CLEAR';
-
-interface IMealsState {
-  stored: MealFragment[];
-  pending: IMealProduct[];
-}
 
 const defaultState: IMealsState = {
   stored: [],
