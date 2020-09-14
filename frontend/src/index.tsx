@@ -27,7 +27,7 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    <SidebarStateProvider>
+    <SidebarStateProvider sidebarState={true}>
       <ApolloProvider client={client}>
         <MainLayout />
       </ApolloProvider>

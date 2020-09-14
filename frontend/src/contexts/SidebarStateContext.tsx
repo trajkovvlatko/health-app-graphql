@@ -1,6 +1,7 @@
 import React, {useState, ReactNode, createContext} from 'react';
 
 interface IProps {
+  sidebarState: boolean;
   children: ReactNode;
 }
 
@@ -15,7 +16,7 @@ const SidebarStateContext = createContext<ISidebarStateContext>({
 });
 
 const SidebarStateProvider = (props: IProps) => {
-  const [sidebarState, setSidebarState] = useState<boolean>(true);
+  const [sidebarState, setSidebarState] = useState<boolean>(props.sidebarState);
 
   const toggle = () => {
     setSidebarState(!sidebarState);

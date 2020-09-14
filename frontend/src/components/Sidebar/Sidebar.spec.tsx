@@ -38,7 +38,7 @@ describe('the toggle sidebar button', () => {
       return (
         <BrowserRouter>
           <MockedProvider mocks={mocks} addTypename={false}>
-            <SidebarStateProvider>
+            <SidebarStateProvider sidebarState={true}>
               <MainLayout />
             </SidebarStateProvider>
           </MockedProvider>
