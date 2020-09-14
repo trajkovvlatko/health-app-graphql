@@ -172,9 +172,19 @@ export type MealProductFragment = (
   ) }
 );
 
+export type MealTypeFragment = (
+  { __typename?: 'MealType' }
+  & Pick<MealType, 'id' | 'name'>
+);
+
 export type ProductFragment = (
   { __typename?: 'Product' }
   & Pick<Product, 'id' | 'name' | 'measure' | 'calories'>
+);
+
+export type UserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'email'>
 );
 
 export type AddMealMutationVariables = Exact<{
@@ -203,7 +213,7 @@ export type LoginMutation = (
     & Pick<UserResponse, 'error'>
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
+      & UserFragment
     )> }
   ) }
 );
@@ -229,7 +239,7 @@ export type RegisterMutation = (
     & Pick<UserResponse, 'error'>
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
+      & UserFragment
     )> }
   ) }
 );
@@ -267,7 +277,7 @@ export type MealTypeQuery = (
   { __typename?: 'Query' }
   & { mealTypes?: Maybe<Array<(
     { __typename?: 'MealType' }
-    & Pick<MealType, 'id' | 'name'>
+    & MealTypeFragment
   )>> }
 );
 
@@ -340,6 +350,18 @@ export const MealFragmentDoc = gql`
   }
 }
     ${MealProductFragmentDoc}`;
+export const MealTypeFragmentDoc = gql`
+    fragment MealType on MealType {
+  id
+  name
+}
+    `;
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  id
+  email
+}
+    `;
 export const AddMealDocument = gql`
     mutation AddMeal($input: MealInput!) {
   addMeal(input: $input) {
@@ -377,12 +399,11 @@ export const LoginDocument = gql`
   login(email: $email, password: $password) {
     error
     user {
-      id
-      email
+      ...User
     }
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -443,12 +464,11 @@ export const RegisterDocument = gql`
   register(email: $email, password: $password) {
     error
     user {
-      id
-      email
+      ...User
     }
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
@@ -547,11 +567,10 @@ export type MealQueryResult = Apollo.QueryResult<MealQuery, MealQueryVariables>;
 export const MealTypeDocument = gql`
     query MealType {
   mealTypes {
-    id
-    name
+    ...MealType
   }
 }
-    `;
+    ${MealTypeFragmentDoc}`;
 
 /**
  * __useMealTypeQuery__

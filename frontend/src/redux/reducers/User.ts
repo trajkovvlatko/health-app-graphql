@@ -7,7 +7,7 @@ interface IAction {
   payload: IUser | null;
 }
 
-const defaultState = null;
+const defaultState: IUser | null = null;
 
 export default function userReducer(state = defaultState, action: IAction) {
   switch (action.type) {

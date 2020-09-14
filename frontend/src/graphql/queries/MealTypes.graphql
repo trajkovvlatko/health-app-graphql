@@ -1,6 +1,5 @@
 query MealType {
   mealTypes {
-    id
-    name
+    ...MealType
   }
 }
