@@ -3,7 +3,7 @@ import {shallow} from 'enzyme';
 import MainLayout from './MainLayout';
 import Home from 'pages/Home/Home';
 import Header from 'components/Header/Header';
-import Sidebar from 'components/Sidebar/Sidebar';
+import SidebarWrapper from 'components/Sidebar/Wrapper';
 import Footer from 'components/Footer/Footer';
 import Meals from 'pages/Meals/Meals';
 import Weight from 'pages/Weight/Weight';
@@ -18,7 +18,7 @@ import Profile from 'pages/Profile/Profile';
 it('renders the main layout', () => {
   const layout = shallow(<MainLayout />);
   expect(layout.find(Header)).toHaveLength(1);
-  expect(layout.find(Sidebar)).toHaveLength(1);
+  expect(layout.find(SidebarWrapper)).toHaveLength(1);
   expect(layout.find(Footer)).toHaveLength(1);
   expect(layout.find(Home)).toHaveLength(1);
   expect(layout.find(Meals)).toHaveLength(1);

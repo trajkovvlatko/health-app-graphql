@@ -9,10 +9,10 @@ function Sidebar() {
   return (
     <div>
       <h1>Sidebar</h1>
-
       <Menu />
-
-      <button onClick={toggle}>Toggle sidebar</button>
+      <button data-testid='toggle-sidebar-button' onClick={toggle}>
+        Toggle sidebar
+      </button>
     </div>
   );
 }

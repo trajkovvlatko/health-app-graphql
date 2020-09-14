@@ -1,13 +1,11 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
 import Home from 'pages/Home/Home';
 
-import Sidebar from 'components/Sidebar/Sidebar';
+import SidebarWrapper from 'components/Sidebar/Wrapper';
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
-
-import {SidebarStateContext} from 'contexts/SidebarStateContext';
 
 import './MainLayout.scss';
 import Meals from 'pages/Meals/Meals';
@@ -22,18 +20,14 @@ import Profile from 'pages/Profile/Profile';
 import Auth from 'pages/Auth/Auth';
 
 function MainLayout() {
-  const {sidebarState} = useContext(SidebarStateContext);
-
   return (
-    <div className='main-layout'>
+    <div className='main-layout' data-testid='main-layout'>
       <BrowserRouter>
         <div className='header'>
           <Header />
         </div>
 
-        <div className={`sidebar ${sidebarState ? 'active' : ''}`}>
-          <Sidebar />
-        </div>
+        <SidebarWrapper />
 
         <div className='content'>
           <Switch>

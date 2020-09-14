@@ -25,10 +25,12 @@ function AuthInfo() {
   }, [loadProfile]);
 
   return (
-    <div className='auth-info'>
+    <div className='auth-info' data-testid='auth-info'>
       {loading && <Loading />}
       {error && <Message type='error' title='Cannot fetch user profile.' />}
-      {profile?.id && <div>Logged in: {profile.email}</div>}
+      {profile?.id && (
+        <div data-testid='auth-info-label'>Logged in: {profile.email}</div>
+      )}
     </div>
   );
 }
