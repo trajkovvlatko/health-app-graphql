@@ -4,7 +4,7 @@ import {buildSchema} from 'type-graphql';
 import cors from 'cors';
 import express from 'express';
 import dotenv from 'dotenv';
-import {createConnection} from 'typeorm';
+import {Connection, createConnection, getConnection} from 'typeorm';
 import MealResolver from './resolver/Meal';
 import ProductResolver from './resolver/Product';
 import MealTypeResolver from './resolver/MealType';
@@ -13,10 +13,17 @@ import session from 'express-session';
 import Session from './entity/Session';
 import {TypeormStore} from 'connect-typeorm/out';
 
-dotenv.config();
+const env = process.env.NODE_ENV || 'dev';
+dotenv.config({path: `.env.${env}`});
 
-export default async function (): Promise<void> {
-  const connection = await createConnection();
+export default async function (): Promise<Express.Application> {
+  let connection: Connection;
+  try {
+    connection = getConnection();
+  } catch (e) {
+    connection = await createConnection();
+  }
+
   const sessionRepository = connection.getRepository(Session);
 
   const app = express();
@@ -60,7 +67,10 @@ export default async function (): Promise<void> {
 
   apolloServer.applyMiddleware({app, cors: false});
 
-  app.listen(process.env.PORT, () => {
-    console.log(`Started server on http://localhost:${process.env.PORT}`);
-  });
+  if (process.env.PORT) {
+    app.listen(process.env.PORT, () => {
+      console.log(`Started server on http://localhost:${process.env.PORT}`);
+    });
+  }
+  return app;
 }
