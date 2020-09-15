@@ -4,6 +4,7 @@ import app from '../src/server';
 import fs from 'fs';
 import path from 'path';
 import {getManager, createConnection, getConnection} from 'typeorm';
+import User from '../src/entity/User';
 
 chai.use(chaiHttp);
 chai.should();
@@ -21,6 +22,10 @@ beforeEach(async () => {
   const sql = await fs.promises.readFile(fullPath);
   await manager.query(sql.toString());
 });
+
+export const authUser = (user: User): void => {
+  console.log(user);
+};
 
 export const loader = app;
 

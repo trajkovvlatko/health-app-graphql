@@ -1,7 +1,12 @@
-import Meal from '../entity/Meal';
-import MealType from '../entity/MealType';
-import Product from '../entity/Product';
-import User from '../entity/User';
+import Meal from '../src/entity/Meal';
+import MealType from '../src/entity/MealType';
+import Product from '../src/entity/Product';
+import User from '../src/entity/User';
+import bcrypt from 'bcrypt';
+
+function rand() {
+  return Math.random().toString(36).substring(7);
+}
 
 interface IOptions {
   [key: string]: string | boolean | number | Date;
@@ -31,32 +36,42 @@ async function create(table: string, options: IOptions = {}): Promise<unknown> {
 
 async function addMeal(options: IOptions): Promise<Meal> {
   const meal = new Meal();
-  if (typeof options.userId === 'number') meal.userId = options.userId;
-  if (typeof options.mealTypeId === 'number')
-    meal.mealTypeId = options.mealTypeId;
+  meal.userId =
+    typeof options.userId === 'number'
+      ? options.userId
+      : (await create('users', {})).id;
+  meal.mealTypeId =
+    typeof options.mealTypeId === 'number'
+      ? options.mealTypeId
+      : (await create('meal_types', {})).id;
   return meal.save();
 }
 
 async function addMealType(options: IOptions): Promise<MealType> {
   const mealType = new MealType();
-  if (typeof options.name === 'string') mealType.name = options.name;
-  if (typeof options.active === 'boolean') mealType.active = options.active;
+  mealType.name = typeof options.name === 'string' ? options.name : rand();
+  mealType.active = typeof options.active === 'boolean' ? options.active : true;
   return mealType.save();
 }
 
 async function addProduct(options: IOptions): Promise<Product> {
   const p = new Product();
-  if (typeof options.name === 'string') p.name = options.name;
-  if (typeof options.measure === 'string') p.measure = options.measure;
-  if (typeof options.calories === 'number') p.calories = options.calories;
+  p.name = typeof options.name === 'string' ? options.name : rand();
+  p.measure = typeof options.measure === 'string' ? options.measure : 'ml';
+  p.calories = typeof options.calories === 'number' ? options.calories : 100;
   return p.save();
 }
 
 async function addUser(options: IOptions): Promise<User> {
+  const password = options.password || rand();
+  const hash = await bcrypt.hash(password, 10);
   const u = new User();
-  if (typeof options.email === 'string') u.email = options.email;
-  if (typeof options.password === 'string') u.password = options.password;
-  if (typeof options.active === 'boolean') u.active = options.active;
+  u.email =
+    typeof options.email === 'string'
+      ? options.email
+      : `${rand()}@${rand()}.com`;
+  u.password = hash;
+  u.active = typeof options.active === 'boolean' ? options.active : true;
   return u.save();
 }
 
