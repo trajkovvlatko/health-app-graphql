@@ -1,6 +1,7 @@
 import chai, {loader, authUser} from '../spec_helper';
 import create from '../factories';
 import User from '../../src/entity/User';
+import MealProduct from '../../src/entity/MealProduct';
 let app: Express.Application;
 
 describe('Meal resolver', () => {
@@ -96,6 +97,49 @@ describe('Meal resolver', () => {
             },
           },
         });
+      });
+
+      it('returns only active products for a meal', async () => {
+        const meal = await create('meals', {userId: user.id});
+        const inactiveProduct = await create('products', {active: false});
+        const mealProduct = new MealProduct();
+        mealProduct.meal = meal;
+        mealProduct.product = inactiveProduct;
+        mealProduct.amount = 456;
+        await mealProduct.save();
+
+        const mealProducts = await MealProduct.find({where: {meal: meal}});
+        mealProducts.length.should.eq(2);
+
+        const res = await chai
+          .request(app)
+          .post('/graphql')
+          .set('Cookie', cookie)
+          .send({query: query(meal.id)});
+
+        res.body.should.deep.eq({
+          data: {
+            meal: {
+              mealType: {
+                name: meal.mealType.name,
+              },
+              mealProducts: [
+                {
+                  amount: meal.mealProducts[0].amount,
+                  product: {
+                    name: meal.mealProducts[0].product.name,
+                    measure: meal.mealProducts[0].product.measure,
+                    calories: meal.mealProducts[0].product.calories,
+                  },
+                },
+              ],
+            },
+          },
+        });
+      });
+
+      it('returns meal only from active meal types', async () => {
+        // TODO
       });
     });
   });
@@ -207,6 +251,35 @@ describe('Meal resolver', () => {
             ],
           },
         });
+      });
+
+      it('returns only active products for meals', async () => {
+        const meal = await create('meals', {userId: user.id});
+        const inactiveProduct = await create('products', {active: false});
+        const mealProduct = new MealProduct();
+        mealProduct.meal = meal;
+        mealProduct.product = inactiveProduct;
+        mealProduct.amount = 456;
+        await mealProduct.save();
+
+        const mealProducts = await MealProduct.find({where: {meal: meal}});
+        mealProducts.length.should.eq(2);
+
+        const res = await chai
+          .request(app)
+          .post('/graphql')
+          .set('Cookie', cookie)
+          .send({query: query()});
+
+        res.body.data.meals.length.should.eq(1);
+        res.body.data.meals[0].mealProducts.length.should.eq(1);
+        res.body.data.meals[0].mealProducts[0].product.name.should.eq(
+          meal.mealProducts[0].product.name,
+        );
+      });
+
+      it('returns only meals from active meal types', async () => {
+        // TODO
       });
     });
   });

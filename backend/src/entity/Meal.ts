@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   Column,
+  getConnection,
 } from 'typeorm';
 import User from './User';
 import MealProduct from './MealProduct';
@@ -45,4 +46,35 @@ export default class Meal extends BaseEntity {
   @Field(() => [MealProduct])
   @OneToMany(() => MealProduct, (mealProduct) => mealProduct.meal)
   mealProducts: MealProduct[];
+
+  static async getFullRecord(id: number, userId: number): Promise<Meal> {
+    return getConnection()
+      .getRepository(Meal)
+      .createQueryBuilder('meal')
+      .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
+      .innerJoinAndSelect('mealProducts.product', 'products')
+      .innerJoinAndSelect('meal.mealType', 'mealType')
+      .where({id, userId})
+      .andWhere('products.active IS TRUE')
+      .getOne();
+  }
+
+  static async getFullRecords(
+    userId: number,
+    take = 10,
+    skip = 0,
+  ): Promise<Meal[]> {
+    return getConnection()
+      .getRepository(Meal)
+      .createQueryBuilder('meal')
+      .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
+      .innerJoinAndSelect('mealProducts.product', 'products')
+      .innerJoinAndSelect('meal.mealType', 'mealType')
+      .where({userId})
+      .andWhere('products.active IS TRUE')
+      .skip(skip)
+      .take(take)
+      .orderBy('meal.id', 'DESC')
+      .getMany();
+  }
 }

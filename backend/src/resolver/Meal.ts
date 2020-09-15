@@ -60,15 +60,7 @@ export default class MealResolver {
     @Arg('id', () => Int) id: number,
     @Ctx() {req}: TContext,
   ): Promise<Meal> {
-    return getConnection()
-      .getRepository(Meal)
-      .createQueryBuilder('meal')
-      .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
-      .innerJoinAndSelect('mealProducts.product', 'products')
-      .innerJoinAndSelect('meal.mealType', 'mealType')
-      .where({id: id, userId: req.user.id})
-      .andWhere('products.active IS TRUE')
-      .getOne();
+    return Meal.getFullRecord(id, req.user.id);
   }
 
   // Example:
@@ -97,18 +89,7 @@ export default class MealResolver {
     if (!take || take > 10 || take < 1) take = 10;
     if (!skip || skip < 0) skip = 0;
 
-    return getConnection()
-      .getRepository(Meal)
-      .createQueryBuilder('meal')
-      .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
-      .innerJoinAndSelect('mealProducts.product', 'products')
-      .innerJoinAndSelect('meal.mealType', 'mealType')
-      .where({userId: req.user.id})
-      .andWhere('products.active IS TRUE')
-      .skip(skip)
-      .take(take)
-      .orderBy('meal.id', 'DESC')
-      .getMany();
+    return Meal.getFullRecords(req.user.id);
   }
 
   // Example:
@@ -142,6 +123,7 @@ export default class MealResolver {
     @Arg('input') input: MealInput,
     @Ctx() {req}: TContext,
   ): Promise<Meal> {
+    // TODO: Run in transaction
     const meal = new Meal();
     meal.userId = req.user.id;
     meal.mealTypeId = input.mealTypeId;
