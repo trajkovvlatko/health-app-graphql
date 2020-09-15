@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import app from '../src/server';
+import loader from '../src/server';
 import fs from 'fs';
 import path from 'path';
 import {getManager, createConnection, getConnection} from 'typeorm';
@@ -23,10 +23,24 @@ beforeEach(async () => {
   await manager.query(sql.toString());
 });
 
-export const authUser = (user: User): void => {
-  console.log(user);
+export const authUser = async (user: User): Promise<string> => {
+  const app = await loader();
+  const query = `
+    mutation Login {
+      login (email: "${user.email}", password: "${user.password}") {
+        user {
+          id
+          email
+        }
+        error
+      }
+    }
+  `;
+
+  const res = await chai.request(app).post('/graphql').send({query: query});
+  return res.get('Set-Cookie')[0];
 };
 
-export const loader = app;
+export {loader};
 
 export default chai;

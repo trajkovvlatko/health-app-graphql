@@ -3,6 +3,8 @@ import MealType from '../src/entity/MealType';
 import Product from '../src/entity/Product';
 import User from '../src/entity/User';
 import bcrypt from 'bcrypt';
+import MealProduct from '../src/entity/MealProduct';
+import {getConnection} from 'typeorm';
 
 function rand() {
   return Math.random().toString(36).substring(7);
@@ -44,14 +46,31 @@ async function addMeal(options: IOptions): Promise<Meal> {
     typeof options.mealTypeId === 'number'
       ? options.mealTypeId
       : (await create('meal_types', {})).id;
-  return meal.save();
+  await meal.save();
+
+  const product = await addProduct({});
+
+  const mealProduct = new MealProduct();
+  mealProduct.meal = meal;
+  mealProduct.product = product;
+  mealProduct.amount = 123;
+  await mealProduct.save();
+
+  return await getConnection()
+    .getRepository(Meal)
+    .createQueryBuilder('meal')
+    .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
+    .innerJoinAndSelect('mealProducts.product', 'products')
+    .innerJoinAndSelect('meal.mealType', 'mealType')
+    .where({id: meal.id})
+    .getOne();
 }
 
 async function addMealType(options: IOptions): Promise<MealType> {
   const mealType = new MealType();
   mealType.name = typeof options.name === 'string' ? options.name : rand();
   mealType.active = typeof options.active === 'boolean' ? options.active : true;
-  return mealType.save();
+  return await mealType.save();
 }
 
 async function addProduct(options: IOptions): Promise<Product> {
@@ -59,7 +78,7 @@ async function addProduct(options: IOptions): Promise<Product> {
   p.name = typeof options.name === 'string' ? options.name : rand();
   p.measure = typeof options.measure === 'string' ? options.measure : 'ml';
   p.calories = typeof options.calories === 'number' ? options.calories : 100;
-  return p.save();
+  return await p.save();
 }
 
 async function addUser(options: IOptions): Promise<User> {
@@ -72,7 +91,9 @@ async function addUser(options: IOptions): Promise<User> {
       : `${rand()}@${rand()}.com`;
   u.password = hash;
   u.active = typeof options.active === 'boolean' ? options.active : true;
-  return u.save();
+  const user = await u.save();
+  user.password = password ? password.toString() : '';
+  return user;
 }
 
 export default create;
