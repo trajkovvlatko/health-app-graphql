@@ -16,6 +16,7 @@ import ExerciseResolver from './resolver/Exercise';
 import ExerciseTypeResolver from './resolver/ExerciseType';
 import WeightResolver from './resolver/Weight';
 import GlucoseLevelResolver from './resolver/GlucoseLevel';
+import ChartResolver from './resolver/Chart';
 
 const env = process.env.NODE_ENV || 'dev';
 dotenv.config({path: `.env.${env}`});
@@ -62,6 +63,7 @@ export default async function (): Promise<Express.Application> {
         ExerciseTypeResolver,
         WeightResolver,
         GlucoseLevelResolver,
+        ChartResolver,
       ],
       validate: false,
     }),
