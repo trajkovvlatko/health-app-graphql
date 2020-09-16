@@ -55,6 +55,7 @@ export default class Meal extends BaseEntity {
       .innerJoinAndSelect('mealProducts.product', 'products')
       .innerJoinAndSelect('meal.mealType', 'mealType')
       .where({id, userId})
+      .andWhere('mealType.active IS TRUE')
       .andWhere('products.active IS TRUE')
       .getOne();
   }
@@ -72,6 +73,7 @@ export default class Meal extends BaseEntity {
       .innerJoinAndSelect('meal.mealType', 'mealType')
       .where({userId})
       .andWhere('products.active IS TRUE')
+      .andWhere('mealType.active IS TRUE')
       .skip(skip)
       .take(take)
       .orderBy('meal.id', 'DESC')

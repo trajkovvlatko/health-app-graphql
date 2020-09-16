@@ -4,6 +4,7 @@ import Product from '../src/entity/Product';
 import User from '../src/entity/User';
 import bcrypt from 'bcrypt';
 import MealProduct from '../src/entity/MealProduct';
+import {getConnection} from 'typeorm';
 
 function rand() {
   return Math.random().toString(36).substring(7);
@@ -55,7 +56,14 @@ async function addMeal(options: IOptions): Promise<Meal> {
   mealProduct.amount = 123;
   await mealProduct.save();
 
-  return await Meal.getFullRecord(meal.id, meal.userId);
+  return await getConnection()
+    .getRepository(Meal)
+    .createQueryBuilder('meal')
+    .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
+    .innerJoinAndSelect('mealProducts.product', 'products')
+    .innerJoinAndSelect('meal.mealType', 'mealType')
+    .where({id: meal.id, userId: meal.userId})
+    .getOne();
 }
 
 async function addMealType(options: IOptions): Promise<MealType> {

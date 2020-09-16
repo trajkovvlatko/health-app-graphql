@@ -12,6 +12,7 @@ import {
 import {getConnection} from 'typeorm';
 import Meal from '../entity/Meal';
 import MealProduct from '../entity/MealProduct';
+import MealType from '../entity/MealType';
 import Product from '../entity/Product';
 import withUser from '../middlewares/withUser';
 import {TContext} from '../types/TContext';
@@ -124,6 +125,12 @@ export default class MealResolver {
     @Ctx() {req}: TContext,
   ): Promise<Meal> {
     // TODO: Run in transaction
+
+    const mealType = await MealType.findOne({
+      where: {active: true, id: input.mealTypeId},
+    });
+    if (!mealType) throw new Error('Invalid meal type.');
+
     const meal = new Meal();
     meal.userId = req.user.id;
     meal.mealTypeId = input.mealTypeId;
