@@ -35,11 +35,11 @@ export default class Exercise extends BaseEntity {
   @Column()
   exerciseTypeId!: number;
 
-  @Field(() => String)
+  @Field(() => Number)
   @Column()
   duration!: number;
 
-  @Field(() => String)
+  @Field(() => Number)
   @Column()
   intensity!: number;
 

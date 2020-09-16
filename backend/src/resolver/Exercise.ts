@@ -17,7 +17,11 @@ import {TContext} from '../types/TContext';
 class ExerciseInput {
   @Field()
   exerciseTypeId: number;
+
+  @Field()
   duration: number;
+
+  @Field()
   intensity: number;
 }
 
@@ -26,6 +30,7 @@ export default class ExerciseResolver {
   // Example:
   // query Exercise {
   //   exercise(id: 1) {
+  //     id
   //     exerciseType {
   //       name
   //       image
@@ -47,6 +52,7 @@ export default class ExerciseResolver {
   // Example:
   // query Exercises {
   //   exercises(skip: 1, take: 5) {
+  //     id
   //     exerciseType {
   //       name
   //       image
@@ -72,19 +78,20 @@ export default class ExerciseResolver {
   // Example:
   // mutation AddExercise {
   //   addExercise(
-  //     input: {
-  //       exerciseId: 1
-  //       duration
-  //       intensity
-  //     }
-  //   ) {
+  //   input: {
+  //     exerciseTypeId: 1,
+  //     duration: 30,
+  //     intensity: 5
+  //   })
+  //   {
+  //     id
   //     exerciseType {
   //       name
-  //       image
   //       calories
   //     }
   //     duration
   //     intensity
+  //     createdAt
   //   }
   // }
   @Mutation(() => Exercise)
