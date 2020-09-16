@@ -12,6 +12,8 @@ import UserResolver from './resolver/User';
 import session from 'express-session';
 import Session from './entity/Session';
 import {TypeormStore} from 'connect-typeorm/out';
+import ExerciseResolver from './resolver/Exercise';
+import ExerciseTypeResolver from './resolver/ExerciseType';
 
 const env = process.env.NODE_ENV || 'dev';
 dotenv.config({path: `.env.${env}`});
@@ -54,6 +56,8 @@ export default async function (): Promise<Express.Application> {
         ProductResolver,
         MealTypeResolver,
         UserResolver,
+        ExerciseResolver,
+        ExerciseTypeResolver,
       ],
       validate: false,
     }),
