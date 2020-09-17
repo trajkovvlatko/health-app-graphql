@@ -7,6 +7,7 @@ import MealProduct from '../src/entity/MealProduct';
 import {getConnection} from 'typeorm';
 import Exercise from '../src/entity/Exercise';
 import ExerciseType from '../src/entity/ExerciseType';
+import GlucoseLevel from '../src/entity/GlucoseLevel';
 
 function rand() {
   return Math.random().toString(36).substring(7);
@@ -17,6 +18,10 @@ interface IOptions {
 }
 
 async function create(table: 'meals', options: IOptions): Promise<Meal>;
+async function create(
+  table: 'glucose_levels',
+  options: IOptions,
+): Promise<GlucoseLevel>;
 async function create(table: 'exercises', options: IOptions): Promise<Exercise>;
 async function create(
   table: 'exercise_types',
@@ -42,6 +47,8 @@ async function create(table: string, options: IOptions = {}): Promise<unknown> {
       return await addExercise(options);
     case 'exercise_types':
       return await addExerciseType(options);
+    case 'glucose_levels':
+      return await addGlucoseLevel(options);
     default:
       throw `No factory for table '${table}'`;
   }
@@ -142,6 +149,16 @@ async function addUser(options: IOptions): Promise<User> {
   const user = await u.save();
   user.password = password ? password.toString() : '';
   return user;
+}
+
+async function addGlucoseLevel(options: IOptions): Promise<GlucoseLevel> {
+  const glucoseLevel = new GlucoseLevel();
+  glucoseLevel.level = typeof options.level === 'number' ? options.level : 100;
+  glucoseLevel.userId =
+    typeof options.userId === 'number'
+      ? options.userId
+      : (await create('users', {})).id;
+  return await glucoseLevel.save();
 }
 
 export default create;

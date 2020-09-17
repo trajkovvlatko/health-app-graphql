@@ -32,7 +32,12 @@ export default class GlucoseLevelResolver {
     if (!take || take > 10 || take < 1) take = 10;
     if (!skip || skip < 0) skip = 0;
 
-    return GlucoseLevel.find({where: {userId: req.user.id}});
+    return GlucoseLevel.find({
+      where: {userId: req.user.id},
+      take,
+      skip,
+      order: {id: 'DESC'},
+    });
   }
 
   // Example:
