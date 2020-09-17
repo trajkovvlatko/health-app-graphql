@@ -1,7 +1,7 @@
-import loader from './server';
+import server from './server';
 
 try {
-  loader();
+  server();
 } catch (e) {
   console.error(e);
 }

@@ -5,6 +5,8 @@ import User from '../src/entity/User';
 import bcrypt from 'bcrypt';
 import MealProduct from '../src/entity/MealProduct';
 import {getConnection} from 'typeorm';
+import Exercise from '../src/entity/Exercise';
+import ExerciseType from '../src/entity/ExerciseType';
 
 function rand() {
   return Math.random().toString(36).substring(7);
@@ -15,6 +17,11 @@ interface IOptions {
 }
 
 async function create(table: 'meals', options: IOptions): Promise<Meal>;
+async function create(table: 'exercises', options: IOptions): Promise<Exercise>;
+async function create(
+  table: 'exercise_types',
+  options: IOptions,
+): Promise<ExerciseType>;
 async function create(
   table: 'meal_types',
   options: IOptions,
@@ -31,6 +38,10 @@ async function create(table: string, options: IOptions = {}): Promise<unknown> {
       return await addProduct(options);
     case 'users':
       return await addUser(options);
+    case 'exercises':
+      return await addExercise(options);
+    case 'exercise_types':
+      return await addExerciseType(options);
     default:
       throw `No factory for table '${table}'`;
   }
@@ -71,6 +82,42 @@ async function addMealType(options: IOptions): Promise<MealType> {
   mealType.name = typeof options.name === 'string' ? options.name : rand();
   mealType.active = typeof options.active === 'boolean' ? options.active : true;
   return await mealType.save();
+}
+
+async function addExercise(options: IOptions): Promise<Exercise> {
+  const exercise = new Exercise();
+  exercise.userId =
+    typeof options.userId === 'number'
+      ? options.userId
+      : (await create('users', {})).id;
+  exercise.exerciseTypeId =
+    typeof options.exerciseTypeId === 'number'
+      ? options.exerciseTypeId
+      : (await create('exercise_types', {})).id;
+  exercise.duration =
+    typeof options.duration === 'number' ? options.duration : 15;
+  exercise.intensity =
+    typeof options.intensity === 'number' ? options.intensity : 3;
+  await exercise.save();
+
+  return getConnection()
+    .getRepository(Exercise)
+    .createQueryBuilder('exercise')
+    .innerJoinAndSelect('exercise.exerciseType', 'exerciseType')
+    .where({id: exercise.id, userId: exercise.userId})
+    .getOne();
+}
+
+async function addExerciseType(options: IOptions): Promise<ExerciseType> {
+  const exerciseType = new ExerciseType();
+  exerciseType.name = typeof options.name === 'string' ? options.name : rand();
+  exerciseType.image =
+    typeof options.image === 'string' ? options.image : rand();
+  exerciseType.calories =
+    typeof options.calories === 'number' ? options.calories : 100;
+  exerciseType.active =
+    typeof options.active === 'boolean' ? options.active : true;
+  return await exerciseType.save();
 }
 
 async function addProduct(options: IOptions): Promise<Product> {

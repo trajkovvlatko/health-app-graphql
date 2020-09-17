@@ -27,7 +27,7 @@ export default class ExerciseType extends BaseEntity {
 
   @Field()
   @Column()
-  calories!: string;
+  calories!: number;
 
   @Column({default: true})
   @Field()

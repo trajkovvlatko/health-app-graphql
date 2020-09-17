@@ -301,7 +301,7 @@ describe('Meal resolver', () => {
       it('returns only meals from active meal types', async () => {
         const inactiveMealType = await create('meal_types', {active: false});
         const meal1 = await create('meals', {userId: user.id});
-        const meal2 = await create('meals', {
+        await create('meals', {
           mealTypeId: inactiveMealType.id,
           userId: user.id,
         });

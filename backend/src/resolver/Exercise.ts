@@ -10,6 +10,7 @@ import {
   Ctx,
 } from 'type-graphql';
 import Exercise from '../entity/Exercise';
+import ExerciseType from '../entity/ExerciseType';
 import withUser from '../middlewares/withUser';
 import {TContext} from '../types/TContext';
 
@@ -100,6 +101,11 @@ export default class ExerciseResolver {
     @Arg('input') input: ExerciseInput,
     @Ctx() {req}: TContext,
   ): Promise<Exercise> {
+    const exerciseType = await ExerciseType.findOne({
+      where: {active: true, id: input.exerciseTypeId},
+    });
+    if (!exerciseType) throw new Error('Invalid exercise type.');
+
     const exercise = new Exercise();
     exercise.userId = req.user.id;
     exercise.exerciseTypeId = input.exerciseTypeId;
