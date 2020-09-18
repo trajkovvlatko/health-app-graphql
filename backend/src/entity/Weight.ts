@@ -24,7 +24,7 @@ export default class Weight extends BaseEntity {
   @Column()
   userId!: number;
 
-  @Field(() => String)
+  @Field(() => Number)
   @Column()
   weight!: number;
 

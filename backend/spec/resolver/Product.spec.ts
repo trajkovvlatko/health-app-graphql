@@ -254,7 +254,7 @@ describe('Product resolver', () => {
     };
 
     context('without user', () => {
-      it.only('returns an auth error when user is not logged in', async () => {
+      it('returns an auth error when user is not logged in', async () => {
         const res = await chai
           .request(app)
           .post('/graphql')

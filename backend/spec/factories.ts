@@ -8,6 +8,7 @@ import {getConnection} from 'typeorm';
 import Exercise from '../src/entity/Exercise';
 import ExerciseType from '../src/entity/ExerciseType';
 import GlucoseLevel from '../src/entity/GlucoseLevel';
+import Weight from '../src/entity/Weight';
 
 function rand() {
   return Math.random().toString(36).substring(7);
@@ -22,6 +23,7 @@ async function create(
   table: 'glucose_levels',
   options: IOptions,
 ): Promise<GlucoseLevel>;
+async function create(table: 'weights', options: IOptions): Promise<Weight>;
 async function create(table: 'exercises', options: IOptions): Promise<Exercise>;
 async function create(
   table: 'exercise_types',
@@ -49,6 +51,8 @@ async function create(table: string, options: IOptions = {}): Promise<unknown> {
       return await addExerciseType(options);
     case 'glucose_levels':
       return await addGlucoseLevel(options);
+    case 'weights':
+      return await addWeight(options);
     default:
       throw `No factory for table '${table}'`;
   }
@@ -160,6 +164,17 @@ async function addGlucoseLevel(options: IOptions): Promise<GlucoseLevel> {
       ? options.userId
       : (await create('users', {})).id;
   return await glucoseLevel.save();
+}
+
+async function addWeight(options: IOptions): Promise<Weight> {
+  const w = new Weight();
+  w.weight = typeof options.weight === 'number' ? options.weight : 65;
+  w.measure = typeof options.measure === 'string' ? options.measure : 'kg';
+  w.userId =
+    typeof options.userId === 'number'
+      ? options.userId
+      : (await create('users', {})).id;
+  return await w.save();
 }
 
 export default create;
