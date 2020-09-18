@@ -53,9 +53,17 @@ export default class ChartResolver {
 
     const meals = await Meal.getFullRecords(req.user.id);
     const exercises = await Exercise.getFullRecords(req.user.id);
-    const weights = await Weight.find({where: {userId: req.user.id}});
+    const weights = await Weight.find({
+      where: {userId: req.user.id},
+      order: {
+        id: 'DESC',
+      },
+    });
     const glucoseLevels = await GlucoseLevel.find({
       where: {userId: req.user.id},
+      order: {
+        id: 'DESC',
+      },
     });
     return {
       exercises,
