@@ -132,6 +132,7 @@ async function addProduct(options: IOptions): Promise<Product> {
   p.name = typeof options.name === 'string' ? options.name : rand();
   p.measure = typeof options.measure === 'string' ? options.measure : 'ml';
   p.calories = typeof options.calories === 'number' ? options.calories : 100;
+  p.userId = typeof options.userId === 'number' ? options.userId : null;
   p.active = typeof options.active === 'boolean' ? options.active : true;
   return await p.save();
 }

@@ -9,8 +9,9 @@ import {
   Field,
   ObjectType,
 } from 'type-graphql';
-import {Like} from 'typeorm';
+import {getConnection} from 'typeorm';
 import Product from '../entity/Product';
+import withPotentialUser from '../middlewares/withPotentialUser';
 import withUser from '../middlewares/withUser';
 import {TContext} from '../types/TContext';
 
@@ -34,21 +35,26 @@ export default class ProductResolver {
   //   }
   // }
   @Query(() => [Product], {nullable: true})
-  products(
+  @UseMiddleware(withPotentialUser)
+  async products(
     @Arg('take', () => Int, {nullable: true}) take: number | null,
     @Arg('skip', () => Int, {nullable: true}) skip: number | null,
+    @Ctx() {req}: TContext,
   ): Promise<Product[]> {
     if (!take || take > 10 || take < 1) take = 10;
     if (!skip || skip < 0) skip = 0;
 
-    return Product.find({
-      where: {active: true},
-      take,
-      skip,
-      order: {
-        id: 'DESC',
-      },
-    });
+    return getConnection()
+      .getRepository(Product)
+      .createQueryBuilder('product')
+      .where([
+        {userId: req.user?.id, active: true},
+        {userId: null, active: true},
+      ])
+      .skip(skip)
+      .take(take)
+      .orderBy('product.id', 'DESC')
+      .getMany();
   }
 
   // Example
@@ -60,19 +66,28 @@ export default class ProductResolver {
   //   }
   // }
   @Query(() => [Product], {nullable: true})
+  @UseMiddleware(withPotentialUser)
   findProducts(
     @Arg('name', () => String) name: string,
     @Arg('take', () => Int, {nullable: true}) take: number | null,
     @Arg('skip', () => Int, {nullable: true}) skip: number | null,
+    @Ctx() {req}: TContext,
   ): Promise<Product[]> {
     if (!take || take > 10 || take < 1) take = 10;
     if (!skip || skip < 0) skip = 0;
 
-    return Product.find({
-      where: {name: Like(`%${name}%`), active: true},
-      take,
-      skip,
-    });
+    return getConnection()
+      .getRepository(Product)
+      .createQueryBuilder('product')
+      .where([
+        {userId: req.user?.id, active: true},
+        {userId: null, active: true},
+      ])
+      .andWhere('product.name like :name', {name: `%${name}%`})
+      .skip(skip)
+      .take(take)
+      .orderBy('product.id', 'DESC')
+      .getMany();
   }
 
   // Example:
@@ -102,9 +117,9 @@ export default class ProductResolver {
     product.calories = calories;
     try {
       await product.save();
+      return {product};
     } catch (e) {
       return {error: 'Cannot save product.'};
     }
-    return {product};
   }
 }
