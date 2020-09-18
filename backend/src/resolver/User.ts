@@ -6,10 +6,12 @@ import {
   Field,
   Mutation,
   Ctx,
+  UseMiddleware,
 } from 'type-graphql';
 import User from '../entity/User';
 import bcrypt from 'bcrypt';
 import {TContext} from '../types/TContext';
+import withUser from '../middlewares/withUser';
 
 @ObjectType()
 class UserResponse {
@@ -29,6 +31,7 @@ export default class UserResolver {
   //     email
   //   }
   // }
+  @UseMiddleware(withUser)
   @Query(() => User, {nullable: true})
   profile(@Ctx() {req}: TContext): Promise<User> {
     if (!req.session.userId) return null;
