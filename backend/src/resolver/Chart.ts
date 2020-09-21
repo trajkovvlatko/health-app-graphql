@@ -1,4 +1,11 @@
-import {Resolver, Query, UseMiddleware, Ctx} from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  UseMiddleware,
+  Ctx,
+  ObjectType,
+  Field,
+} from 'type-graphql';
 import Chart from '../entity/Chart';
 import Exercise from '../entity/Exercise';
 import GlucoseLevel from '../entity/GlucoseLevel';
@@ -7,10 +14,26 @@ import Weight from '../entity/Weight';
 import withUser from '../middlewares/withUser';
 import {TContext} from '../types/TContext';
 import timeseries from 'timeseries-analysis';
+import TTimeSeriesRow from '../types/TTimeSeriesRow';
 
-type TTimeSeriesRow = [Date, number];
+interface IForecastResponse {
+  glucoseLevels: TTimeSeriesRow[];
+  weights: TTimeSeriesRow[];
+}
 
-const extendList = (data: TTimeSeriesRow[]) => {
+@ObjectType()
+class ForecastResponse {
+  @Field(() => [[String, Number]])
+  glucoseLevels: TTimeSeriesRow[];
+
+  @Field(() => [[String, Number]])
+  weights: TTimeSeriesRow[];
+}
+
+const extendList = (data: TTimeSeriesRow[]): TTimeSeriesRow[] => {
+  if (data.length < 5) {
+    return data;
+  }
   for (let i = 0; i < 5; i++) {
     const t = new timeseries.main(data);
     const coeffs = t.ARMaxEntropy({data: t.data});
@@ -32,12 +55,16 @@ const extendList = (data: TTimeSeriesRow[]) => {
 
 @Resolver(Exercise)
 export default class ChartResolver {
-  @Query(() => [[String, Number]], {nullable: true})
+  @Query(() => ForecastResponse, {nullable: true})
   @UseMiddleware(withUser)
-  async forecast(@Ctx() {req}: TContext): Promise<TTimeSeriesRow[]> {
+  async forecast(@Ctx() {req}: TContext): Promise<IForecastResponse> {
     const glucoseLevels = await GlucoseLevel.getTimeSeries(req.user.id);
-    const data = extendList(glucoseLevels);
-    return data;
+    const weights = await Weight.getTimeSeries(req.user.id);
+    console.log(weights);
+    return {
+      glucoseLevels: extendList(glucoseLevels),
+      weights: extendList(weights),
+    };
   }
 
   // Example:

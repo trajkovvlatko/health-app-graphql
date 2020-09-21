@@ -8,6 +8,7 @@ import {
   ManyToOne,
   Column,
 } from 'typeorm';
+import TTimeSeriesRow from '../types/TTimeSeriesRow';
 import User from './User';
 
 @Entity()
@@ -39,4 +40,17 @@ export default class Weight extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt: Date;
+
+  static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
+    const weights: Weight[] = await Weight.find({
+      select: ['createdAt', 'weight'],
+      where: {userId: userId},
+      order: {
+        createdAt: 'ASC',
+      },
+      take: 50,
+    });
+
+    return weights.map((w: Weight) => [w.createdAt, w.weight]);
+  }
 }

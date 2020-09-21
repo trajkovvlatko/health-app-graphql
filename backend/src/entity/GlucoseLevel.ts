@@ -8,6 +8,7 @@ import {
   ManyToOne,
   Column,
 } from 'typeorm';
+import TTimeSeriesRow from '../types/TTimeSeriesRow';
 import User from './User';
 
 @Entity()
@@ -36,7 +37,7 @@ export default class GlucoseLevel extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  static async getTimeSeries(userId: number): Promise<[Date, number][]> {
+  static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
     const glucoseLevels = await GlucoseLevel.find({
       select: ['createdAt', 'level'],
       where: {userId: userId},
