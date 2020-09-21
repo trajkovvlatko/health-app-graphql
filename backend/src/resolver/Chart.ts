@@ -16,26 +16,44 @@ import {TContext} from '../types/TContext';
 import timeseries from 'timeseries-analysis';
 import TTimeSeriesRow from '../types/TTimeSeriesRow';
 
+interface IMappedResponse {
+  timestamp: number;
+  date: string;
+  value: number;
+}
+
 interface IForecastResponse {
-  glucoseLevels: TTimeSeriesRow[];
-  weights: TTimeSeriesRow[];
-  meals: TTimeSeriesRow[];
-  exercises: TTimeSeriesRow[];
+  glucoseLevels: IMappedResponse[];
+  weights: IMappedResponse[];
+  meals: IMappedResponse[];
+  exercises: IMappedResponse[];
+}
+
+@ObjectType()
+class MappedResponse {
+  @Field(() => Number)
+  timestamp: number;
+
+  @Field(() => String)
+  date: string;
+
+  @Field(() => Number)
+  value: number;
 }
 
 @ObjectType()
 class ForecastResponse {
-  @Field(() => [[String, Number]])
-  glucoseLevels: TTimeSeriesRow[];
+  @Field(() => [MappedResponse])
+  glucoseLevels: IMappedResponse[];
 
-  @Field(() => [[String, Number]])
-  weights: TTimeSeriesRow[];
+  @Field(() => [MappedResponse])
+  weights: IMappedResponse[];
 
-  @Field(() => [[String, Number]])
-  meals: TTimeSeriesRow[];
+  @Field(() => [MappedResponse])
+  meals: IMappedResponse[];
 
-  @Field(() => [[String, Number]])
-  exercises: TTimeSeriesRow[];
+  @Field(() => [MappedResponse])
+  exercises: IMappedResponse[];
 }
 
 const extendList = (data: TTimeSeriesRow[]): TTimeSeriesRow[] => {
@@ -61,15 +79,41 @@ const extendList = (data: TTimeSeriesRow[]): TTimeSeriesRow[] => {
   return data;
 };
 
+const map = (data: TTimeSeriesRow[]): IMappedResponse[] => {
+  return data.map((row: TTimeSeriesRow) => {
+    return {
+      timestamp: row[0].getTime(),
+      date: row[0].toDateString(),
+      value: row[1],
+    };
+  });
+};
+
 @Resolver(Exercise)
 export default class ChartResolver {
   // Example:
   // query Chart {
   //   forecast {
-  //     meals
-  //     exercises
-  //     weights
-  //     glucoseLevels
+  //     exercises {
+  //       timestamp
+  //       date
+  //       value
+  //     }
+  //     meals {
+  //       timestamp
+  //       date
+  //       value
+  //     }
+  //     weights {
+  //       timestamp
+  //       date
+  //       value
+  //     }
+  //     glucoseLevels {
+  //       timestamp
+  //       date
+  //       value
+  //     }
   //   }
   // }
   @Query(() => ForecastResponse, {nullable: true})
@@ -81,10 +125,10 @@ export default class ChartResolver {
     const exercises = await Exercise.getTimeSeries(req.user.id);
 
     return {
-      glucoseLevels: extendList(glucoseLevels),
-      weights: extendList(weights),
-      meals: extendList(meals),
-      exercises: extendList(exercises),
+      glucoseLevels: map(extendList(glucoseLevels)),
+      weights: map(extendList(weights)),
+      meals: map(extendList(meals)),
+      exercises: map(extendList(exercises)),
     };
   }
 
