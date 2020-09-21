@@ -35,4 +35,16 @@ export default class GlucoseLevel extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt: Date;
+
+  static async getTimeSeries(userId: number): Promise<[Date, number][]> {
+    const glucoseLevels = await GlucoseLevel.find({
+      select: ['createdAt', 'level'],
+      where: {userId: userId},
+      order: {
+        createdAt: 'ASC',
+      },
+      take: 50,
+    });
+    return glucoseLevels.map((gl: GlucoseLevel) => [gl.createdAt, gl.level]);
+  }
 }

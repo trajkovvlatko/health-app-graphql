@@ -21,7 +21,7 @@ export default class Meal extends BaseEntity {
   @Field()
   id!: number;
 
-  @Field()
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user, {nullable: false})
   user!: User;
 

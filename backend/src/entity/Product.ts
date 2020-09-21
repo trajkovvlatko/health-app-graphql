@@ -46,7 +46,7 @@ export default class Product extends BaseEntity {
   @OneToMany(() => MealProduct, (mealProduct) => mealProduct.product)
   mealProducts: MealProduct[];
 
-  @Field()
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user, {nullable: true})
   user: User;
 

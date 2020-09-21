@@ -24,7 +24,8 @@ class ChartResponse {
 @Resolver(Exercise)
 export default class ChartResolver {
   @Query(() => ChartResponse, {nullable: true})
-  blah(): ChartResponse {
+  @UseMiddleware(withUser)
+  async forecast(@Ctx() {req}: TContext): Promise<ChartResponse> {
     const data = [
       ['2012-01-01', 1],
       ['2012-01-02', 1],
@@ -41,6 +42,8 @@ export default class ChartResolver {
       ['2012-01-13', 7],
       ['2012-01-14', 7],
     ];
+    const glucoseLevels = await GlucoseLevel.getTimeSeries(req.user.id);
+    console.log(glucoseLevels);
 
     for (let i = 0; i < 5; i++) {
       const t = new timeseries.main(data);
@@ -58,7 +61,7 @@ export default class ChartResolver {
       data[nextIndex] = [`2012-01-${nextDate}`, Math.round(forecast)];
     }
 
-    console.log('forecast', data);
+    // console.log('forecast', data);
 
     return {
       a: 1,
