@@ -43,7 +43,7 @@ export default class Weight extends BaseEntity {
 
   static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
     const weights: Weight[] = await Weight.find({
-      select: ['createdAt', 'weight'],
+      select: ['createdAt', 'weight', 'measure'],
       where: {userId: userId},
       order: {
         createdAt: 'ASC',
@@ -51,6 +51,8 @@ export default class Weight extends BaseEntity {
       take: 50,
     });
 
-    return weights.map((w: Weight) => [w.createdAt, w.weight]);
+    return weights.map((w: Weight) => {
+      return [w.createdAt, w.measure === 'kg' ? w.weight : w.weight * 0.45];
+    });
   }
 }

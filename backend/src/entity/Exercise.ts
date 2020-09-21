@@ -26,7 +26,7 @@ export default class Exercise extends BaseEntity {
   @Column()
   userId!: number;
 
-  @Field()
+  @Field(() => ExerciseType)
   @ManyToOne(() => ExerciseType, (exerciseType) => exerciseType, {
     nullable: false,
   })

@@ -13,6 +13,7 @@ import {
 import User from './User';
 import MealProduct from './MealProduct';
 import MealType from './MealType';
+import TTimeSeriesRow from '../types/TTimeSeriesRow';
 
 @Entity()
 @ObjectType()
@@ -79,4 +80,12 @@ export default class Meal extends BaseEntity {
       .orderBy('meal.id', 'DESC')
       .getMany();
   }
+
+  // static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
+  //   const meals = await Meal.getFullRecords(userId);
+  //
+  //   return meals.map((m: Meal) => {
+  //     return [m.createdAt, m.id];
+  //   });
+  // }
 }

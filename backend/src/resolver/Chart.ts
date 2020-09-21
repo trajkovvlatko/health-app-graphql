@@ -60,7 +60,7 @@ export default class ChartResolver {
   async forecast(@Ctx() {req}: TContext): Promise<IForecastResponse> {
     const glucoseLevels = await GlucoseLevel.getTimeSeries(req.user.id);
     const weights = await Weight.getTimeSeries(req.user.id);
-    console.log(weights);
+    // const meals = await Meal.getTimeSeries(req.user.id);
     return {
       glucoseLevels: extendList(glucoseLevels),
       weights: extendList(weights),
