@@ -2,11 +2,12 @@ import dotenv from 'dotenv';
 import {createConnection, getConnection, getManager} from 'typeorm';
 import GlucoseLevel from './entity/GlucoseLevel';
 import User from './entity/User';
+import bcrypt from 'bcrypt';
 
 const env = process.env.NODE_ENV || 'dev';
 dotenv.config({path: `.env.${env}`});
 
-const rand = (max: number) => Math.floor(Math.random() * Math.floor(max));
+const rand = (max: number) => Math.ceil(Math.random() * Math.floor(max));
 
 const datesBetweenDates = (startDate: Date, endDate: Date) => {
   let dates = [];
@@ -22,7 +23,7 @@ const datesBetweenDates = (startDate: Date, endDate: Date) => {
 const addUser = async (i: number): Promise<User> => {
   const user = new User();
   user.email = `email-${i}@host.com`;
-  user.password = `password-${i}`;
+  user.password = await bcrypt.hash(`password-${i}`, 10);
   await user.save();
   return user;
 };
