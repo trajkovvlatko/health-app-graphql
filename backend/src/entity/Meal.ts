@@ -81,6 +81,7 @@ export default class Meal extends BaseEntity {
       .getMany();
   }
 
+  // TODO: This is a bit meh, try to improve.
   static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
     const dbMeals = await getConnection()
       .getRepository(Meal)
@@ -95,11 +96,36 @@ export default class Meal extends BaseEntity {
       .orderBy('meal.createdAt', 'DESC')
       .getMany();
 
-    return dbMeals.map((m: Meal) => {
-      const calories = m.mealProducts.reduce((acc, mealProduct) => {
-        return acc + mealProduct.product.calories;
-      }, 0);
-      return [m.createdAt, calories];
-    });
+    const pad = (n: number) => (n < 10 ? '0' + n : n);
+
+    const getFullDate = (c: Date): string => {
+      const year = pad(c.getFullYear());
+      const month = pad(c.getMonth() + 1);
+      const day = pad(c.getDate());
+      return `${year}-${month}-${day}`;
+    };
+
+    const groups = dbMeals.reduce((groups, item: Meal) => {
+      const date = getFullDate(item.createdAt);
+      const group = groups[date] || [];
+      group.push(item);
+      groups[date] = group;
+      return groups;
+    }, {});
+
+    const list = Object.entries(groups).map(
+      ([key, meals]: [string, Meal[]]) => {
+        const calories = meals.reduce((acc, meal) => {
+          return (
+            acc +
+            meal.mealProducts.reduce((acc1, mealProduct) => {
+              return acc1 + mealProduct.product.calories;
+            }, 0)
+          );
+        }, 0);
+        return [new Date(key), calories];
+      },
+    );
+    return list as TTimeSeriesRow[];
   }
 }

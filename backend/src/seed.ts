@@ -203,7 +203,11 @@ const clearTables = async (): Promise<void> => {
   await addExerciseTypes();
 
   const users = await addUsers();
-  users.map(async (user: User) => addMeals(user.id));
+  users.map(async (user: User) => {
+    addMeals(user.id);
+    addMeals(user.id);
+    addMeals(user.id);
+  });
   users.map((user: User) => addGlucoseLevels(user.id));
   users.map((user: User) => addWeights(user.id));
   users.map((user: User) => addExercises(user.id));
