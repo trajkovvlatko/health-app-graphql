@@ -184,8 +184,7 @@ const addExercises = async (userId: number): Promise<Exercise[]> => {
 };
 
 const clearTables = async (): Promise<void> => {
-  const manager = getManager();
-  await manager.query(
+  await getManager().query(
     'TRUNCATE TABLE "user", "product", "meal_type", "meal", "meal_product", "glucose_level", "weight", "exercise_type", "exercise" CASCADE;',
   );
 };

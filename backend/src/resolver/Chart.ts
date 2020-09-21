@@ -19,6 +19,8 @@ import TTimeSeriesRow from '../types/TTimeSeriesRow';
 interface IForecastResponse {
   glucoseLevels: TTimeSeriesRow[];
   weights: TTimeSeriesRow[];
+  meals: TTimeSeriesRow[];
+  exercises: TTimeSeriesRow[];
 }
 
 @ObjectType()
@@ -28,6 +30,12 @@ class ForecastResponse {
 
   @Field(() => [[String, Number]])
   weights: TTimeSeriesRow[];
+
+  @Field(() => [[String, Number]])
+  meals: TTimeSeriesRow[];
+
+  @Field(() => [[String, Number]])
+  exercises: TTimeSeriesRow[];
 }
 
 const extendList = (data: TTimeSeriesRow[]): TTimeSeriesRow[] => {
@@ -55,15 +63,28 @@ const extendList = (data: TTimeSeriesRow[]): TTimeSeriesRow[] => {
 
 @Resolver(Exercise)
 export default class ChartResolver {
+  // Example:
+  // query Chart {
+  //   forecast {
+  //     meals
+  //     exercises
+  //     weights
+  //     glucoseLevels
+  //   }
+  // }
   @Query(() => ForecastResponse, {nullable: true})
   @UseMiddleware(withUser)
   async forecast(@Ctx() {req}: TContext): Promise<IForecastResponse> {
     const glucoseLevels = await GlucoseLevel.getTimeSeries(req.user.id);
     const weights = await Weight.getTimeSeries(req.user.id);
-    // const meals = await Meal.getTimeSeries(req.user.id);
+    const meals = await Meal.getTimeSeries(req.user.id);
+    const exercises = await Exercise.getTimeSeries(req.user.id);
+
     return {
       glucoseLevels: extendList(glucoseLevels),
       weights: extendList(weights),
+      meals: extendList(meals),
+      exercises: extendList(exercises),
     };
   }
 

@@ -81,11 +81,25 @@ export default class Meal extends BaseEntity {
       .getMany();
   }
 
-  // static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
-  //   const meals = await Meal.getFullRecords(userId);
-  //
-  //   return meals.map((m: Meal) => {
-  //     return [m.createdAt, m.id];
-  //   });
-  // }
+  static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
+    const dbMeals = await getConnection()
+      .getRepository(Meal)
+      .createQueryBuilder('meal')
+      .innerJoinAndSelect('meal.mealProducts', 'mealProducts')
+      .innerJoinAndSelect('mealProducts.product', 'products')
+      .innerJoinAndSelect('meal.mealType', 'mealType')
+      .where({userId})
+      .andWhere('products.active IS TRUE')
+      .andWhere('mealType.active IS TRUE')
+      .take(50)
+      .orderBy('meal.createdAt', 'DESC')
+      .getMany();
+
+    return dbMeals.map((m: Meal) => {
+      const calories = m.mealProducts.reduce((acc, mealProduct) => {
+        return acc + mealProduct.product.calories;
+      }, 0);
+      return [m.createdAt, calories];
+    });
+  }
 }

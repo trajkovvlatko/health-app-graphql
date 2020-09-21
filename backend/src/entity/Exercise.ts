@@ -9,6 +9,7 @@ import {
   Column,
   getConnection,
 } from 'typeorm';
+import TTimeSeriesRow from '../types/TTimeSeriesRow';
 import ExerciseType from './ExerciseType';
 import User from './User';
 
@@ -76,5 +77,22 @@ export default class Exercise extends BaseEntity {
       .take(take)
       .orderBy('exercise.id', 'DESC')
       .getMany();
+  }
+
+  static async getTimeSeries(userId: number): Promise<TTimeSeriesRow[]> {
+    const dbExercises = await getConnection()
+      .getRepository(Exercise)
+      .createQueryBuilder('exercise')
+      .innerJoinAndSelect('exercise.exerciseType', 'exerciseType')
+      .where({userId})
+      .andWhere('exerciseType.active IS TRUE')
+      .take(50)
+      .orderBy('exercise.id', 'DESC')
+      .getMany();
+
+    return dbExercises.map((e: Exercise) => {
+      const calories = e.duration * e.exerciseType.calories;
+      return [e.createdAt, calories];
+    });
   }
 }
