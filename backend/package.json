@@ -20,6 +20,7 @@
     "graphql": "^15.3.0",
     "pg": "^8.3.3",
     "reflect-metadata": "^0.1.13",
+    "timeseries-analysis": "^1.0.12",
     "type-graphql": "^1.0.0",
     "typeorm": "^0.2.25"
   },
