@@ -1,6 +1,0 @@
-fragment Product on Product {
-  id
-  name
-  measure
-  calories
-}

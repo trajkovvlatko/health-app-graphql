@@ -1,4 +1,0 @@
-fragment MealType on MealType {
-  id
-  name
-}

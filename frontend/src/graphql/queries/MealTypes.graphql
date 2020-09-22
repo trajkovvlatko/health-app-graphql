@@ -1,5 +1,0 @@
-query MealType {
-  mealTypes {
-    ...MealType
-  }
-}

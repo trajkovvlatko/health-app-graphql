@@ -1,5 +1,0 @@
-query Meal($id: Int!) {
-  meal(id: $id) {
-    ...Meal
-  }
-}
